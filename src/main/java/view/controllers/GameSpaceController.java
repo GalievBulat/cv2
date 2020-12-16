@@ -153,4 +153,7 @@ public class GameSpaceController implements Initializable {
         listManipulations.append(text);
     }
 
+    public CardsRepository getCardsRepository() {
+        return cardsRepository;
+    }
 }

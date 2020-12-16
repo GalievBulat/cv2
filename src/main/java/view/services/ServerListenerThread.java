@@ -5,6 +5,7 @@ import javafx.application.Platform;
 import javafx.util.Pair;
 import server.helper.IOHandler;
 import view.controllers.GameSpaceController;
+import view.models.Card;
 import view.models.Message;
 
 import java.util.List;
@@ -33,6 +34,9 @@ public class ServerListenerThread {
                     String[] partsOfData = text.split(" ");
                     if(partsOfData[0].equals("/c")) {
                         controller.setRole(Integer.parseInt(partsOfData[1]));
+                    } else if (partsOfData[0].equals("/cd")){
+                        controller.getCardsRepository().add(new Card("xd.jpg",Integer.parseInt(partsOfData[1])),
+                                controller.getCardsRepository().getSize());
                     } else if(partsOfData[0].equals("/dp")) {
                             Pair<Byte,Byte> coords=helper.parseCoordinates(partsOfData[2]);
                             Platform.runLater(()-> {

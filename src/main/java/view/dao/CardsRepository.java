@@ -34,4 +34,8 @@ public class CardsRepository {
         cardsList.remove(card);
     }
 
+    public int getSize(){
+        return cardsList.size();
+    }
+
 }

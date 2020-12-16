@@ -12,6 +12,7 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
+import static server.helper.Meta.CARDS_GIVING_PERIOD;
 import static server.helper.Meta.COMMANDS_EXECUTION_PERIOD;
 
 public class Server implements AutoCloseable {
@@ -78,11 +79,13 @@ public class Server implements AutoCloseable {
                     }
                 }
                 long currentTime = System.currentTimeMillis();
-                if(currentTime - time>=COMMANDS_EXECUTION_PERIOD){
-                    for (Room room: roomsRepository.getRooms()){
+                for (Room room: roomsRepository.getRooms()){
+                    if(currentTime - room.getLastTimeOfExecution()>=COMMANDS_EXECUTION_PERIOD) {
                         room.executePool();
                     }
-                    time = currentTime;
+                    if (currentTime - room.getLastTimeCardGiven()>=CARDS_GIVING_PERIOD){
+                        room.giveCards();
+                    }
                 }
             } catch (IOException e) {
                 throw new RuntimeException(e);

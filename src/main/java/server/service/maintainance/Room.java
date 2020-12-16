@@ -7,6 +7,7 @@ import server.helper.Meta;
 import server.model.User;
 import server.service.GameService;
 import server.interfaces.Instruction;
+import view.dao.CardsRepository;
 
 import java.io.BufferedWriter;
 import java.io.IOException;
@@ -21,6 +22,8 @@ public class Room {
     private int id;
     private User player1;
     private User player2;
+    private long lastTimeOfExecution = System.currentTimeMillis();
+    private long lastTimeCardGiven = System.currentTimeMillis();
     private final IOHandler helper = new IOHandler();
     private final GameService gameService = new GameService();
     private final Map<User, Socket> sockets = new HashMap<>(Meta.USERS_IN_ROOM_LIMIT);
@@ -131,7 +134,11 @@ public class Room {
                     instruction.execute();
                 }
             executionPool.clear();
+            lastTimeOfExecution = System.currentTimeMillis();
         }
+    }
+    public void giveCards(){
+        sendToUser(player1,"/cd " + gameService.getUnitTypeRepository().getRandom().getId());
     }
     public boolean isVacant(){
         return sockets.size()<Meta.USERS_IN_ROOM_LIMIT;
@@ -141,5 +148,11 @@ public class Room {
     }
     public void setId(int id) {
         this.id = id;
+    }
+    public long getLastTimeOfExecution() {
+        return lastTimeOfExecution;
+    }
+    public long getLastTimeCardGiven() {
+        return lastTimeCardGiven;
     }
 }

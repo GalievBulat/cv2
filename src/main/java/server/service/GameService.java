@@ -7,7 +7,7 @@ import java.util.*;
 
 public class GameService {
     private final ServiceBoardManager boardManager = new ServiceBoardManager();
-    UnitTypeRepository unitTypeRepository = new UnitTypeRepository();
+    private final UnitTypeRepository unitTypeRepository = new UnitTypeRepository();
     private final LinkedList<Unit> units1 = new LinkedList<>();
     private final LinkedList<Unit> units2 = new LinkedList<>();
     public boolean move(boolean cl1,byte x1, byte y1, byte x2,byte y2){
@@ -21,7 +21,12 @@ public class GameService {
         }
         return false;
     }
-    public boolean attack(boolean cl1,byte x1, byte y1, byte x2,byte y2){
+
+    public UnitTypeRepository getUnitTypeRepository() {
+        return unitTypeRepository;
+    }
+
+    public boolean attack(boolean cl1, byte x1, byte y1, byte x2, byte y2){
         if (boardManager.get(x1, y1).isPresent() && boardManager.get(x2, y2).isPresent()) {
             Unit attacker = boardManager.get(x1, y1).get();
             Unit attacked = boardManager.get(x2, y2).get();

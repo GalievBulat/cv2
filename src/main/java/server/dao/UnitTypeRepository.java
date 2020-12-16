@@ -4,6 +4,7 @@ import server.model.UnitType;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 public class UnitTypeRepository {
     private final List<UnitType> types = new ArrayList<>();
@@ -15,5 +16,8 @@ public class UnitTypeRepository {
     }
     public UnitType find (int id){
         return types.get(id);
+    }
+    public UnitType getRandom(){
+        return types.get(new Random().nextInt(types.size()));
     }
 }
