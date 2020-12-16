@@ -37,7 +37,6 @@ public class GameSpaceController implements Initializable {
     private CardsRepository cardsRepository;
     private Client client;
     private int role = -1;
-    //private final Map<Figure,Figure> attackingMap = new HashMap<>();
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         cardsManipulatingHandler = new GridManipulations(cards);
@@ -45,17 +44,14 @@ public class GameSpaceController implements Initializable {
         listManipulations = new ListManipulations(messagesList);
         figuresRepository = new FiguresRepository(boardManipulatingHandler, new BoardManager());
 
-        figuresRepository.addEnemyFigure(new Figure(0,5,14));
+        //egfiguresRepository.addEnemyFigure(new Figure(0,5,14));
 
-        cardsRepository =  new CardsRepository(new OnClickListener() {
-            @Override
-            public void onClick(Card card) {
-                if (selectedCard != null) {
-                    selectedCard.getView().setStyle("-fx-background-color: white");
-                }
-                selectedCard = card;
-                card.getView().setStyle("-fx-border-color: black");
+        cardsRepository =  new CardsRepository(card -> {
+            if (selectedCard != null) {
+                selectedCard.getView().setStyle("-fx-background-color: white");
             }
+            selectedCard = card;
+            card.getView().setStyle("-fx-border-color: black");
         },cardsManipulatingHandler);
         setUpTheBoard();
         board.setOnMouseClicked((event -> {
@@ -118,6 +114,12 @@ public class GameSpaceController implements Initializable {
         else
             figuresRepository.addEnemyFigure(newFigure);
         listManipulations.append(newFigure.getUnit().getName() + " is deployed");
+    }
+    public void remove(int column,int row){
+        figuresRepository.findFigure(column,row).ifPresent(figure-> {
+            figuresRepository.removeFigure(figure);
+            board.getChildren().remove(figure.getView());
+        });
     }
     public void setRole(int roleId){
         this.role = roleId;

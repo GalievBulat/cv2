@@ -10,22 +10,40 @@ public class GameService {
     UnitTypeRepository unitTypeRepository = new UnitTypeRepository();
     private final LinkedList<Unit> units1 = new LinkedList<>();
     private final LinkedList<Unit> units2 = new LinkedList<>();
-    public void move(boolean cl1,byte x1, byte y1, byte x2,byte y2){
-        boardManager.get(x1,y1).ifPresent(unit-> {
-            if(cl1 == unit.is1st()) {
-                boardManager.remove(unit.x, unit.y);
+    public boolean move(boolean cl1,byte x1, byte y1, byte x2,byte y2){
+        if (boardManager.get(x1,y1).isPresent()) {
+            Unit unit = boardManager.get(x1, y1).get();
+            if ((cl1 && units1.contains(unit)) || (!cl1 && units2.contains(unit))) {
+                boardManager.remove(x1, y1);
                 boardManager.addUnit(unit, x2, y2);
+                return true;
             }
-        });
-    }
-    public void attack(boolean cl1,byte x1, byte y1, byte x2,byte y2){
-        Unit attacker = boardManager.get(x1,y1).orElseThrow(RuntimeException::new);
-        Unit attacked = boardManager.get(x2,y2).orElseThrow(RuntimeException::new);
-        if (cl1 == attacker.is1st() && cl1 != attacked.is1st()) {
-            attacked.getAttacked(attacked.getDamage());
         }
+        return false;
     }
-    public void add(boolean cl1, int type, byte x,byte y) {
+    public boolean attack(boolean cl1,byte x1, byte y1, byte x2,byte y2){
+        if (boardManager.get(x1, y1).isPresent() && boardManager.get(x2, y2).isPresent()) {
+            Unit attacker = boardManager.get(x1, y1).get();
+            Unit attacked = boardManager.get(x2, y2).get();
+            if (cl1 && (units1.contains(attacker) && units2.contains(attacked))) {
+                attacked.getAttacked(attacked.getDamage());
+                if (attacked.getHealth()<=0){
+                    boardManager.remove(x2,y2);
+                    units2.remove(attacked);
+                    return true;
+                }
+            }else if (!cl1 && (units2.contains(attacker) && units1.contains(attacked))){
+                attacked.getAttacked(attacked.getDamage());
+                if (attacked.getHealth()<=0){
+                    boardManager.remove(x2,y2);
+                    units1.remove(attacked);
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+    public boolean add(boolean cl1, int type, byte x,byte y) {
         Unit unit;
         if (cl1){
             unit = new Unit.Builder().type(unitTypeRepository.find(type)).create();
@@ -35,6 +53,7 @@ public class GameService {
             units2.add(unit);
         }
         boardManager.addUnit(unit,x, y);
+        return true;
     }
 
 }

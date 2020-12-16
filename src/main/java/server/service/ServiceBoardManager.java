@@ -9,7 +9,7 @@ public class ServiceBoardManager {
     public final static byte BOARD_ROWS = 16;
     private final Unit[][] units = new Unit[BOARD_COLUMNS][BOARD_ROWS];
     public void addUnit(Unit unit,byte column,byte row){
-        if(validateCoordinates(column,row) && units[column][row]!=null){
+        if(validateCoordinates(column,row) && units[column][row]==null){
             units[column][row] = unit;
             unit.x = column;
             unit.y = row;

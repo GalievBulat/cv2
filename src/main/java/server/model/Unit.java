@@ -4,14 +4,9 @@ public class Unit {
     private byte health;
     public byte x;
     public byte y;
-    private final boolean cl1;
-    private Unit(UnitType type,boolean cl1){
+    private Unit(UnitType type){
         this.type = type;
         this.health = type.getHealth();
-        this.cl1 = cl1;
-    }
-    public boolean is1st() {
-        return cl1;
     }
     public UnitType getType() {
         return type;
@@ -42,7 +37,7 @@ public class Unit {
         }
 
         public Unit create() {
-            return new Unit(type,cl1);
+            return new Unit(type);
         }
     }
 }
