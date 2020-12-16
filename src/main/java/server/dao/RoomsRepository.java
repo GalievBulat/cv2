@@ -10,8 +10,7 @@ import java.util.Map;
 public class RoomsRepository {
     private final Map<Integer,Room> rooms = new HashMap<>();
      public RoomsRepository(){
-         Room room = new Room();
-         room.setId(0);
+         Room room = new Room(0);
          rooms.put(0,room);
     }
 
@@ -22,14 +21,19 @@ public class RoomsRepository {
         return rooms.get(num);
     }
     public void add(Room room){
-        rooms.put(rooms.size(),room);
+        rooms.put(room.getId(),room);
     }
-    public List<Room> findVacantRooms(){
+    public List<Room> getVacantRooms(){
         List<Room> roomsList = new ArrayList<>();
         for (Room room: rooms.values()){
             if (room.isVacant()){
                 roomsList.add(room);
             }
+        }
+        if(roomsList.size() == 0){
+            Room newRoom = new Room(rooms.size());
+            add(newRoom);
+            roomsList.add(newRoom);
         }
         return roomsList;
     }

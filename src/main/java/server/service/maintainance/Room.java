@@ -16,12 +16,14 @@ import java.io.OutputStreamWriter;
 import java.net.Socket;
 import java.util.*;
 
+import static server.helper.Meta.CARDS_OVERALL_AMOUNT;
 import static server.helper.Meta.SEND_SELF;
 
 public class Room {
-    private int id;
     private User player1;
     private User player2;
+    private int cards_given = 0;
+    private final int id;
     private long lastTimeOfExecution = System.currentTimeMillis();
     private long lastTimeCardGiven = System.currentTimeMillis();
     private final IOHandler helper = new IOHandler();
@@ -29,7 +31,8 @@ public class Room {
     private final Map<User, Socket> sockets = new HashMap<>(Meta.USERS_IN_ROOM_LIMIT);
     private final List<String> archive = new ArrayList<>();
     private final List<Instruction> executionPool = new LinkedList<>();
-    public Room() {
+    public Room(int id) {
+        this.id = id;
     }
     public void sendToChatters(User user,String message){
         String line= user.getName() + ": " + message;
@@ -51,6 +54,10 @@ public class Room {
         //TODO
         sendToChatters(user, "disconnected");
         sockets.remove(user);
+        if (player1 == user)
+            player1 = null;
+        if (player2 == user)
+            player2 = null;
         user.setCurrentChat(-1);
     }
     public void connect(User user, Socket socket){
@@ -138,16 +145,18 @@ public class Room {
         }
     }
     public void giveCards(){
-        sendToUser(player1,"/cd " + gameService.getUnitTypeRepository().getRandom().getId());
+        if (cards_given<=CARDS_OVERALL_AMOUNT) {
+            sendToUser(player1, "/cd " + gameService.getUnitTypeRepository().getRandom().getId());
+            sendToUser(player2, "/cd " + gameService.getUnitTypeRepository().getRandom().getId());
+            cards_given++;
+            lastTimeCardGiven = System.currentTimeMillis();
+        }
     }
     public boolean isVacant(){
         return sockets.size()<Meta.USERS_IN_ROOM_LIMIT;
     }
     public int getId() {
         return id;
-    }
-    public void setId(int id) {
-        this.id = id;
     }
     public long getLastTimeOfExecution() {
         return lastTimeOfExecution;

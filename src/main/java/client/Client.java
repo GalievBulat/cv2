@@ -87,6 +87,9 @@ public class Client implements AutoCloseable {
 
     public void stop(){
         helper.writeLine(writer,"/s");
+        try {
+            close();
+        } catch (IOException ignore) { }
     }
     public boolean isAlive(){
         return !socket.isClosed();

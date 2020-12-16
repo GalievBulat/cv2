@@ -43,9 +43,6 @@ public class GameSpaceController implements Initializable {
         boardManipulatingHandler = new GridManipulations(board);
         listManipulations = new ListManipulations(messagesList);
         figuresRepository = new FiguresRepository(boardManipulatingHandler, new BoardManager());
-
-        //egfiguresRepository.addEnemyFigure(new Figure(0,5,14));
-
         cardsRepository =  new CardsRepository(card -> {
             if (selectedCard != null) {
                 selectedCard.getView().setStyle("-fx-background-color: white");
@@ -88,16 +85,19 @@ public class GameSpaceController implements Initializable {
             }
         }));
     }
+
     public void move(boolean self,int columnS,int rowS, int columnD,int rowD){
-        Figure prevFigure = figuresRepository.findFigure(columnS, rowS)
-                .orElseThrow(RuntimeException::new);
-        figuresRepository.removeFigure(prevFigure);
-        Figure newFigure = new Figure(prevFigure.getUnit().getId(), columnD, rowD);
-        if (self)
-            figuresRepository.addAlliedFigure(newFigure);
-        else
-            figuresRepository.addEnemyFigure(newFigure);
-        listManipulations.append("move " + prevFigure.getUnit().getName() + " " + columnD+ " " + rowD);
+        //????
+        if (figuresRepository.findFigure(columnS, rowS).isPresent()) {
+            Figure prevFigure =figuresRepository.findFigure(columnS, rowS).get();
+            figuresRepository.removeFigure(prevFigure);
+            Figure newFigure = new Figure(prevFigure.getUnit().getId(), columnD, rowD);
+            if (self)
+                figuresRepository.addAlliedFigure(newFigure);
+            else
+                figuresRepository.addEnemyFigure(newFigure);
+            listManipulations.append("move " + prevFigure.getUnit().getName() + " " + columnD + " " + rowD);
+        }
     }
     public void attack(int columnA,int rowA, int columnV,int rowV){
         listManipulations.append(

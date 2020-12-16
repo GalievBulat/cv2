@@ -50,7 +50,7 @@ public class Server implements AutoCloseable {
                     user.setName(name);
                     sockets.put(user, client);
                     helper.writeLine(client.getOutputStream(),
-                            "/d " + roomsRepository.findVacantRooms().stream().map(room -> room.getId() + "")
+                            "/d " + roomsRepository.getVacantRooms().stream().map(room -> room.getId() + "")
                                     .collect(Collectors.joining()));
                     System.out.println(name + " initialized");
                 } else {
@@ -80,11 +80,13 @@ public class Server implements AutoCloseable {
                 }
                 long currentTime = System.currentTimeMillis();
                 for (Room room: roomsRepository.getRooms()){
-                    if(currentTime - room.getLastTimeOfExecution()>=COMMANDS_EXECUTION_PERIOD) {
-                        room.executePool();
-                    }
-                    if (currentTime - room.getLastTimeCardGiven()>=CARDS_GIVING_PERIOD){
-                        room.giveCards();
+                    if (!room.isVacant()) {
+                        if (currentTime - room.getLastTimeOfExecution() >= COMMANDS_EXECUTION_PERIOD) {
+                            room.executePool();
+                        }
+                        if (currentTime - room.getLastTimeCardGiven() >= CARDS_GIVING_PERIOD) {
+                            room.giveCards();
+                        }
                     }
                 }
             } catch (IOException e) {
@@ -103,16 +105,17 @@ public class Server implements AutoCloseable {
             if (message.charAt(0) == '/') {
                 String[] strings = message.split(" ");
                 String command = strings[0];
-                    if (command.equals("/s"))
+                    if (command.equals("/s")) {
                         closeClient(user);
-                    else if (command.equals("/sd"))
+                        if (user.getCurrentChat()!=-1){
+                            roomsRepository.getRoom(user.getCurrentChat()).disconnect(user);
+                        }
+                    }else if (command.equals("/sd"))
                         close();
                     else if (command.equals("/e"))
                         roomsRepository.getRoom(Integer.parseInt(strings[1])).connect(user,sockets.get(user));
                     else
                         roomsRepository.getRoom(user.getCurrentChat()).handleCommand(message,user);
-                    /* else if (user.getCurrentChat()!=-1)
-                roomsRepository.getChat(user.getCurrentChat()).sendToChatters(user , message);*/
             }
         }catch (IOException e) {
             throw new RuntimeException(e);

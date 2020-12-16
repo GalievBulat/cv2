@@ -3,10 +3,12 @@ package view;
 
 import client.Client;
 import javafx.application.Application;
+import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import javafx.stage.WindowEvent;
 import server.model.User;
 import view.controllers.GameSpaceController;
 import view.controllers.LoginController;
@@ -68,6 +70,7 @@ public class GameViewExecution extends Application {
             stage.setMinWidth(800);
             stage.setTitle("Игра");
             stage.setScene(new Scene(root, 800, 600));
+            stage.setOnCloseRequest(event -> client.stop());
             stage.show();
         } catch (IOException e) {
             throw new IllegalStateException(e);
