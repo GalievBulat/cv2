@@ -1,6 +1,6 @@
-package serverclient;
+package server;
 
-import serverclient.server.Server;
+import server.service.maintainance.Server;
 
 public class ServerMaintenance {
     public static void main(String[] args){

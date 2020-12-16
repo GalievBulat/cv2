@@ -1,25 +1,26 @@
-package serverclient.server;
+package server.service.maintainance;
 
-import serverclient.dao.RoomsRepository;
-import serverclient.helper.IOHandler;
-import serverclient.helper.Meta;
-import serverclient.model.User;
-import serverclient.service.GameService;
+import server.dao.RoomsRepository;
+import server.helper.IOHandler;
+import server.helper.Meta;
+import server.model.User;
 
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
+import java.util.stream.Collectors;
+
+import static server.helper.Meta.COMMANDS_EXECUTION_PERIOD;
 
 public class Server implements AutoCloseable {
-    final Map<User, Socket> sockets = new ConcurrentHashMap<>();
+    private long time = System.currentTimeMillis();
+    private final Map<User, Socket> sockets = new ConcurrentHashMap<>();
     private final ServerSocket socket;
     private final IOHandler helper = new IOHandler();
     private final RoomsRepository roomsRepository = new RoomsRepository();
-    private final GameService gameService = new GameService();
-    // /init Sasha 0 2 3
+    // /init Sasha
     // /enter 0
     public Server() {
         try {
@@ -40,23 +41,17 @@ public class Server implements AutoCloseable {
             try {
                 Socket client = socket.accept();
                 System.out.println("connected");
-                BufferedReader reader =new BufferedReader( new InputStreamReader(client.getInputStream()));
-                String query = helper.readLine(reader);
-                if (query.startsWith("/init")) {
+                String query = helper.readLine(client.getInputStream());
+                if (query.startsWith("/i ")) {
                     String[] args = query.split(" ");
                     String name = args[1];
-                    ArrayList<Integer> channels = new ArrayList<>();
-                    for (int i = 2; i < args.length; i++) {
-                        channels.add(Integer.parseInt(args[i]));
-                    }
-                    User user = new User(name, channels.stream().mapToInt(i->i).toArray());
+                    User user = new User();
+                    user.setName(name);
                     sockets.put(user, client);
-                    /*BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(client.getOutputStream()));
-                    writer.write(getUsers().toString() + "\n");
-                    writer.flush();*/
+                    helper.writeLine(client.getOutputStream(),
+                            "/d " + roomsRepository.findVacantRooms().stream().map(room -> room.getId() + "")
+                                    .collect(Collectors.joining()));
                     System.out.println(name + " initialized");
-                    helper.writeLine(new BufferedWriter(new OutputStreamWriter(client.getOutputStream())),
-                            "server: Вы успешно вошли в систему! Выберите чат приступайте к диалогу");
                 } else {
                     client.close();
                     System.out.println("wrong greeting");
@@ -64,10 +59,10 @@ public class Server implements AutoCloseable {
             } catch (IOException e) {
                 throw new RuntimeException(e);
             } catch (RuntimeException e){
-                System.out.println(e.getStackTrace());
+                e.printStackTrace();
                 try {
-                    close();
                     alertAll(e.getMessage());
+                    close();
                 } catch (IOException ignore) { }
             }
         }
@@ -77,20 +72,25 @@ public class Server implements AutoCloseable {
             try {
                 if (sockets.size()!=0)
                 for (User user : sockets.keySet()) {
-                    if ( !sockets.get(user).isClosed() && sockets.get(user).getInputStream().available() != 0) {
+                    if (!sockets.get(user).isClosed() && sockets.get(user).getInputStream().available() != 0) {
                         handleMessage(
-                            helper.readLine(
-                                new BufferedReader(
-                                    new InputStreamReader(sockets.get(user).getInputStream()))), user);
+                            helper.readLine(sockets.get(user).getInputStream()), user);
                     }
+                }
+                long currentTime = System.currentTimeMillis();
+                if(currentTime - time>=COMMANDS_EXECUTION_PERIOD){
+                    for (Room room: roomsRepository.getRooms()){
+                        room.executePool();
+                    }
+                    time = currentTime;
                 }
             } catch (IOException e) {
                 throw new RuntimeException(e);
             } catch (RuntimeException e){
                 e.printStackTrace();
                 try {
+                    alertAll(e.toString());
                     close();
-                    alertAll(e.getMessage());
                 } catch (IOException ignore) { }
             }
         }
@@ -100,31 +100,28 @@ public class Server implements AutoCloseable {
             if (message.charAt(0) == '/') {
                 String[] strings = message.split(" ");
                 String command = strings[0];
-                    if (command.equals("/stop"))
+                    if (command.equals("/s"))
                         closeClient(user);
-                    else if (command.equals("/shutdown"))
+                    else if (command.equals("/sd"))
                         close();
-                    else if (command.equals("/leave"))
-                        roomsRepository.getRoom(user.getCurrentChat()).disconnect(user);
-                    else if (command.equals("/enter"))
+                    else if (command.equals("/e"))
                         roomsRepository.getRoom(Integer.parseInt(strings[1])).connect(user,sockets.get(user));
-                    else if (command.equals("/move"))
-                        gameService.move(Integer.parseInt(strings[1]),Integer.parseInt(strings[2]),Integer.parseInt(strings[3]));
-                    else if (command.equals("/attack"))
-                        gameService.attack(Integer.parseInt(strings[1]),Integer.parseInt(strings[2]));
-            }/* else if (user.getCurrentChat()!=-1)
+                    else
+                        roomsRepository.getRoom(user.getCurrentChat()).handleCommand(message,user);
+                    /* else if (user.getCurrentChat()!=-1)
                 roomsRepository.getChat(user.getCurrentChat()).sendToChatters(user , message);*/
-        } catch (IOException e) {
+            }
+        }catch (IOException e) {
             throw new RuntimeException(e);
         } catch (RuntimeException e){
-            alertAll(e.getMessage());
+            alertAll(e.toString());
         }
     }
     public void alertAll(String message){
         try {
             for(Socket socket : sockets.values()){
                 if (!socket.isClosed())
-                    helper.writeLine(new BufferedWriter(new OutputStreamWriter(socket.getOutputStream())),message);
+                    helper.writeLine(socket.getOutputStream(),"server: "+message);
             }
         } catch (IOException e) {
             throw new RuntimeException(e);

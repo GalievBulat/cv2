@@ -7,9 +7,9 @@ public class Figure {
     private final Node circle;
     private int column;
     private int row;
-    private final Unit unit;
+    private final UnitType unitType;
     public Figure(int id,int column,int row){
-        this.unit = new Unit.Builder().id(id).name(Units.values()[id].name()).create();
+        this.unitType = new UnitType.Builder().id(id).name(Units.values()[id].name()).create();
         circle = new Circle(15);
         this.column = column;
         this.row = row;
@@ -33,7 +33,7 @@ public class Figure {
     public void setRow(int row) {
         this.row = row;
     }
-    public Unit getUnit() {
-        return unit;
+    public UnitType getUnit() {
+        return unitType;
     }
 }

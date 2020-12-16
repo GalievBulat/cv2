@@ -1,4 +1,4 @@
-package serverclient.model;
+package server.model;
 
 public class User {
     private String name;
@@ -21,7 +21,7 @@ public class User {
 
     public void setCurrentChat(int currentChat) {
         //if(Arrays.stream(rooms).anyMatch((int chat)-> chat == currentChat))
-            this.currentChat = currentChat;
+        this.currentChat = currentChat;
     }
 
     public String getName() {
@@ -36,7 +36,7 @@ public class User {
         return rooms;
     }
 
-    public void setRooms(int... room) {
-        this.rooms = room;
+    public void setRooms(int[] rooms) {
+        this.rooms = rooms;
     }
 }

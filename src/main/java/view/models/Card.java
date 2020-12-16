@@ -9,11 +9,11 @@ import view.interfaces.OnClickListener;
 
 public class Card {
     private final String imageUrl;
-    private final Unit unit;
+    private final UnitType unitType;
     private VBox vBox;
     public Card(String imageUrl, int unitId){
         this.imageUrl = imageUrl;
-        this.unit = new Unit.Builder().id(unitId).name(Units.values()[unitId].name()).create();;
+        this.unitType = new UnitType.Builder().id(unitId).name(Units.values()[unitId].name()).create();;
         vBox = new VBox();
         vBox.setMaxWidth(60);
         vBox.setStyle("-fx-background-color: #FFFFFF;");
@@ -22,7 +22,7 @@ public class Card {
         image.setFitWidth(100);
         image.setPreserveRatio(true);
         vBox.getChildren().add(image);
-        Label text = new Label(unit.getName());
+        Label text = new Label(unitType.getName());
         text.setFont(Font.font("Roboto Light",12));
         vBox.getChildren().add(text);
     }
@@ -37,7 +37,7 @@ public class Card {
         });
     }
 
-    public Unit getUnit() {
-        return unit;
+    public UnitType getUnit() {
+        return unitType;
     }
 }

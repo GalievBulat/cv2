@@ -3,8 +3,8 @@ package view.models;
 
 
 public class Message {
-    String userName;
-    public String text;
+    private String userName;
+    private String text;
 
 
     @Override

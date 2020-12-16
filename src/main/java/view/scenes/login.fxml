@@ -15,6 +15,11 @@
          <Font size="16.0" />
       </font></Button>
    <ChoiceBox fx:id="chb_room" prefWidth="150.0" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="CENTER" />
+   <Button fx:id="bn_join" layoutX="277.0" layoutY="172.0" mnemonicParsing="false" text="Присоедениться к игре" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="CENTER">
+      <font>
+         <Font size="16.0" />
+      </font>
+   </Button>
    <columnConstraints>
       <ColumnConstraints minWidth="50.0" percentWidth="50" />
    </columnConstraints>
@@ -22,6 +27,7 @@
       <RowConstraints minHeight="30.0" percentHeight="10" />
       <RowConstraints minHeight="30.0" percentHeight="30" />
       <RowConstraints minHeight="30.0" percentHeight="10" />
+      <RowConstraints minHeight="30.0" percentHeight="25" />
       <RowConstraints minHeight="30.0" percentHeight="25" />
    </rowConstraints>
 </GridPane>
