@@ -1,4 +1,4 @@
-package view.models;
+package view.model;
 
 import javafx.scene.control.Label;
 import javafx.scene.image.ImageView;
@@ -10,10 +10,10 @@ import view.interfaces.OnClickListener;
 public class Card {
     private final String imageUrl;
     private final UnitType unitType;
-    private VBox vBox;
-    public Card(String imageUrl, int unitId){
-        this.imageUrl = imageUrl;
-        this.unitType = new UnitType.Builder().id(unitId).name(Units.values()[unitId].name()).create();;
+    private final VBox vBox;
+    public Card(UnitType unitType){
+        this.unitType = unitType;
+        this.imageUrl = unitType.getImagePath();
         vBox = new VBox();
         vBox.setMaxWidth(60);
         vBox.setStyle("-fx-background-color: #FFFFFF;");

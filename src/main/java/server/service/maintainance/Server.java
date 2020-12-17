@@ -1,15 +1,12 @@
 package server.service.maintainance;
 
+import javafx.util.Pair;
+import protocol.ServerCommunication;
 import server.dao.RoomsRepository;
-import server.helper.IOHandler;
 import server.helper.Meta;
 import server.model.User;
 
 import java.io.*;
-import java.net.ServerSocket;
-import java.net.Socket;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
 import static server.helper.Meta.CARDS_GIVING_PERIOD;
@@ -17,29 +14,31 @@ import static server.helper.Meta.COMMANDS_EXECUTION_PERIOD;
 
 public class Server implements AutoCloseable {
     private long time = System.currentTimeMillis();
-    private final Map<User, Socket> sockets = new ConcurrentHashMap<>();
-    private final ServerSocket socket;
-    private final IOHandler helper = new IOHandler();
+    /* private final Map<User, Socket> sockets = new ConcurrentHashMap<>();
+    private final ServerSocket socket;*/
+    private final ServerCommunication serverCommunication = new ServerCommunication(Meta.PORT);
+    //private final IOHandler helper = new IOHandler();
     private final RoomsRepository roomsRepository = new RoomsRepository();
     // /init Sasha
     // /enter 0
     public Server() {
-        try {
+        /*try {
             socket = new ServerSocket(Meta.PORT);
         }catch (IOException e){
             throw new RuntimeException(e);
-        }
+        }*/
     }
     @Override
     public void close() throws IOException{
-        for (User user: sockets.keySet()){
+        /*for (User user: sockets.keySet()){
             closeClient(user);
         }
-        socket.close();
+        socket.close();*/
+        serverCommunication.close();
     }
     public void handleConnections() {
-        while (!socket.isClosed()) {
-            try {
+        while (!serverCommunication.isClosed()) {
+            /*try {
                 Socket client = socket.accept();
                 System.out.println("connected");
                 String query = helper.readLine(client.getInputStream());
@@ -65,38 +64,32 @@ public class Server implements AutoCloseable {
                     alertAll(e.getMessage());
                     close();
                 } catch (IOException ignore) { }
-            }
+            }*/
+            serverCommunication.addClient(roomsRepository.getVacantRooms().stream().map(Room::getId).collect(Collectors.toList()));
         }
     }
     public void listenToIncomingMessages(){
-        while (!socket.isClosed()) {
-            try {
-                if (sockets.size()!=0)
-                for (User user : sockets.keySet()) {
-                    if (!sockets.get(user).isClosed() && sockets.get(user).getInputStream().available() != 0) {
-                        handleMessage(
-                            helper.readLine(sockets.get(user).getInputStream()), user);
+        while (!serverCommunication.isClosed()) {
+            /*if (sockets.size()!=0)
+            for (User user : sockets.keySet()) {
+                if (!sockets.get(user).isClosed() && sockets.get(user).getInputStream().available() != 0) {
+                    handleMessage(
+                        helper.readLine(sockets.get(user).getInputStream()), user);
+                }
+            }*/
+            for (Pair<String,User> update : serverCommunication.getUpdates()){
+                handleMessage(update.getKey(),update.getValue());
+            }
+            long currentTime = System.currentTimeMillis();
+            for (Room room: roomsRepository.getRooms()){
+                if (!room.isVacant()) {
+                    if (currentTime - room.getLastTimeOfExecution() >= COMMANDS_EXECUTION_PERIOD) {
+                        room.executePool();
+                    }
+                    if (currentTime - room.getLastTimeCardGiven() >= CARDS_GIVING_PERIOD) {
+                        room.giveCards();
                     }
                 }
-                long currentTime = System.currentTimeMillis();
-                for (Room room: roomsRepository.getRooms()){
-                    if (!room.isVacant()) {
-                        if (currentTime - room.getLastTimeOfExecution() >= COMMANDS_EXECUTION_PERIOD) {
-                            room.executePool();
-                        }
-                        if (currentTime - room.getLastTimeCardGiven() >= CARDS_GIVING_PERIOD) {
-                            room.giveCards();
-                        }
-                    }
-                }
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            } catch (RuntimeException e){
-                e.printStackTrace();
-                try {
-                    alertAll(e.toString());
-                    close();
-                } catch (IOException ignore) { }
             }
         }
     }
@@ -106,40 +99,26 @@ public class Server implements AutoCloseable {
                 String[] strings = message.split(" ");
                 String command = strings[0];
                     if (command.equals("/s")) {
-                        closeClient(user);
+                        serverCommunication.closeClient(user);
                         if (user.getCurrentChat()!=-1){
                             roomsRepository.getRoom(user.getCurrentChat()).disconnect(user);
                         }
                     }else if (command.equals("/sd"))
                         close();
                     else if (command.equals("/e"))
-                        roomsRepository.getRoom(Integer.parseInt(strings[1])).connect(user,sockets.get(user));
+                        roomsRepository.getRoom(Integer.parseInt(strings[1])).connect(user,serverCommunication.getSocket(user));
                     else
                         roomsRepository.getRoom(user.getCurrentChat()).handleCommand(message,user);
             }
         }catch (IOException e) {
             throw new RuntimeException(e);
-        } catch (RuntimeException e){
+        }/* catch (RuntimeException e){
             alertAll(e.toString());
-        }
+        }*/
     }
-    public void alertAll(String message){
-        try {
-            for(Socket socket : sockets.values()){
-                if (!socket.isClosed())
-                    helper.writeLine(socket.getOutputStream(),"server: "+message);
-            }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
-    }
+
     public boolean isClosed(){
-        return socket.isClosed();
+        return serverCommunication.isClosed();
     }
-    public void closeClient(User user){
-        try {
-            sockets.get(user).close();
-            sockets.remove(user);
-        } catch (IOException ignore) { }
-    }
+
 }

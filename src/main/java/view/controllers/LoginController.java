@@ -1,6 +1,6 @@
 package view.controllers;
 
-import client.Client;
+import protocol.ClientCommunication;
 import com.sun.javafx.collections.ObservableListWrapper;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -33,11 +33,11 @@ public class LoginController implements Initializable {
             String name = tf_name.getText();
             if (user!=null) {
                 user.setName(name);
-                Client client = new Client(user);
+                ClientCommunication clientCommunication = new ClientCommunication(user);
                 setRooms(user.getRooms());
                 //TODO if rooms are empty
                 bn_join.setOnMouseClicked(event1 ->{
-                    executor.startGame(client,chb_room.getValue());
+                    executor.startGame(clientCommunication,chb_room.getValue());
                 });
             }
         });

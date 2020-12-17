@@ -1,6 +1,6 @@
 package view.interfaces;
 
-import view.models.Card;
+import view.model.Card;
 
 public interface OnClickListener {
     public void onClick(Card card);

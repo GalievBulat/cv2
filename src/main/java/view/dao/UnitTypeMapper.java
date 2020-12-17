@@ -1,7 +1,6 @@
 package view.dao;
 
 import view.interfaces.RowMapper;
-import view.models.UnitType;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

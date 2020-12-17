@@ -11,8 +11,6 @@ public class ServiceBoardManager {
     public void addUnit(Unit unit,byte column,byte row){
         if(validateCoordinates(column,row) && units[column][row]==null){
             units[column][row] = unit;
-            unit.x = column;
-            unit.y = row;
         }
     }
     public void remove(byte column, byte row){
@@ -25,6 +23,11 @@ public class ServiceBoardManager {
             return units[column][row]!=null;
         } return false;
     }
+    public boolean checkIfExists(int column, int row){
+        if (validateCoordinates((byte) column,(byte) row)){
+            return units[column][row]!=null;
+        } return false;
+    }
     private boolean validateCoordinates(byte column,byte row){
         return (row>=0 && column>=0 && row<BOARD_ROWS &&
                 column< BOARD_COLUMNS);
@@ -33,5 +36,17 @@ public class ServiceBoardManager {
         if(units[column][row] != null) {
             return Optional.of(units[column][row]);
         } else return Optional.empty();
+    }
+    public byte getNeighboursCount(byte column,byte row){
+        byte count = 0;
+        if (checkIfExists( column+1,row)) count++;
+        if (checkIfExists( column-1,row)) count++;
+        if (checkIfExists(column,  row+1)) count++;
+        if (checkIfExists(column,  row-1)) count++;
+        if (checkIfExists( column+1, row+1)) count++;
+        if (checkIfExists( column+1, row-1)) count++;
+        if (checkIfExists( column-1, row+1)) count++;
+        if (checkIfExists( column-1, row-1)) count++;
+        return count;
     }
 }

@@ -1,6 +1,6 @@
 package view.controllers;
 
-import client.Client;
+import protocol.ClientCommunication;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.geometry.HPos;
@@ -10,10 +10,9 @@ import javafx.scene.control.ListView;
 import javafx.scene.layout.*;
 import view.dao.CardsRepository;
 import view.dao.FiguresRepository;
-import view.interfaces.OnClickListener;
 import view.interfaces.ViewManipulations;
-import view.models.Card;
-import view.models.Figure;
+import view.model.Card;
+import view.model.Figure;
 import view.services.BoardManager;
 import view.services.GridManipulations;
 import view.services.ListManipulations;
@@ -35,7 +34,7 @@ public class GameSpaceController implements Initializable {
     private ListManipulations listManipulations = null;
     private FiguresRepository figuresRepository = null;
     private CardsRepository cardsRepository;
-    private Client client;
+    private ClientCommunication clientCommunication;
     private int role = -1;
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -64,7 +63,7 @@ public class GameSpaceController implements Initializable {
                             //worrying about it
                             if ((role == 1 && row == BoardManager.BOARD_ROWS - 1)||(role == 2 && row == 0)) {
                                 cardsRepository.remove(selectedCard);
-                                client.sendMessage("/dp " + selectedCard.getUnit().getId() + " {" + column + ";" + row + "}");
+                                clientCommunication.sendMessage("/dp " + selectedCard.getUnit().getId() + " {" + column + ";" + row + "}");
                                 selectedCard = null;
                             }
                         }
@@ -72,11 +71,11 @@ public class GameSpaceController implements Initializable {
                             Math.abs(selectedFigure.getRow() - row) <= 1 && Math.abs(selectedFigure.getColumn() - column) <= 1) {
                         if (figuresRepository.checkIfEnemy(column, row)) {
                             //attackingMap.put(selectedFigure, figuresRepository.findFigure(column, row).orElseThrow(RuntimeException::new));
-                            client.sendMessage("/at {" +  selectedFigure.getColumn() + ";" + selectedFigure.getRow()+ "} " +
+                            clientCommunication.sendMessage("/at {" +  selectedFigure.getColumn() + ";" + selectedFigure.getRow()+ "} " +
                                     "{" + column + ";" + row  + "}");
                         } else if (!figuresRepository.checkIfExists(column, row)) {
                             //figuresRepository.removeFigure(selectedFigure);
-                            client.sendMessage("/mv {" + selectedFigure.getColumn() + ";" + selectedFigure.getRow() + "} " +
+                            clientCommunication.sendMessage("/mv {" + selectedFigure.getColumn() + ";" + selectedFigure.getRow() + "} " +
                                     "{" + column + ";" + row  + "}");
                             selectedFigure = null;
                         }
@@ -96,7 +95,6 @@ public class GameSpaceController implements Initializable {
                 figuresRepository.addAlliedFigure(newFigure);
             else
                 figuresRepository.addEnemyFigure(newFigure);
-            listManipulations.append("move " + prevFigure.getUnit().getName() + " " + columnD + " " + rowD);
         }
     }
     public void attack(int columnA,int rowA, int columnV,int rowV){
@@ -124,21 +122,21 @@ public class GameSpaceController implements Initializable {
     public void setRole(int roleId){
         this.role = roleId;
     }
-    public void setClient(Client client) {
-        this.client = client;
+    public void setClient(ClientCommunication clientCommunication) {
+        this.clientCommunication = clientCommunication;
     }
     private void setUpTheBoard(){
         for (int i = 0; i < BoardManager.BOARD_COLUMNS; i++) {
             board.addColumn(i);
             ColumnConstraints constraints = new ColumnConstraints(30);
-            constraints.setPercentWidth(80/BoardManager.BOARD_ROWS);
+            constraints.setPercentWidth((double) 80/BoardManager.BOARD_ROWS);
             constraints.setHalignment(HPos.CENTER);
             board.getColumnConstraints().add(constraints);
         }
         for (int i = 0; i < BoardManager.BOARD_ROWS; i++) {
             board.addRow(i);
             RowConstraints constraints = new RowConstraints(30);
-            constraints.setPercentHeight(80/BoardManager.BOARD_ROWS);
+            constraints.setPercentHeight((double) 80/BoardManager.BOARD_ROWS);
             constraints.setValignment(VPos.CENTER);
             board.getRowConstraints().add(constraints);
         }

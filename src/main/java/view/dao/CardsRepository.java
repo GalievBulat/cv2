@@ -2,7 +2,7 @@ package view.dao;
 
 import view.interfaces.OnClickListener;
 import view.interfaces.ViewManipulations;
-import view.models.Card;
+import view.model.Card;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -14,8 +14,6 @@ public class CardsRepository {
     public CardsRepository(OnClickListener listener, ViewManipulations cardsManipulator){
         this.cardsManipulator = cardsManipulator;
         this.listener = listener;
-        add(new Card("xd.jpg",1),0);
-        add(new Card("xd.jpg",2),1);
     }
     public List<Card> getAll(){
         return cardsList;

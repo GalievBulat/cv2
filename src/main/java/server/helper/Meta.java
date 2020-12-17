@@ -8,5 +8,6 @@ public class Meta {
      public final static long COMMANDS_EXECUTION_PERIOD = 0;
      public final static long CARDS_GIVING_PERIOD = 20000;
      public final static int CARDS_OVERALL_AMOUNT = 15;
+     public final static int ENCIRCLEMENT_DAMAGE_COEFFICIENT = 30;
      public final static boolean SEND_SELF = true;
 }

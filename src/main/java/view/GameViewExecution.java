@@ -1,14 +1,12 @@
 package view;
 
 
-import client.Client;
+import protocol.ClientCommunication;
 import javafx.application.Application;
-import javafx.event.EventHandler;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import javafx.stage.WindowEvent;
 import server.model.User;
 import view.controllers.GameSpaceController;
 import view.controllers.LoginController;
@@ -54,23 +52,23 @@ public class GameViewExecution extends Application {
         }
     }
 
-    public void startGame(Client client,int roomId){
+    public void startGame(ClientCommunication clientCommunication, int roomId){
         Parent root;
         FXMLLoader loader;
         try {
-            client.sendMessage("/e " + roomId);
+            clientCommunication.sendMessage("/e " + roomId);
             loader = new FXMLLoader(getClass().getResource("../game.fxml"));
             root = loader.load();
             gameController = loader.getController();
-            gameController.setClient(client);
+            gameController.setClient(clientCommunication);
             loginController = null;
-            ServerListenerThread serverListenerThread = new ServerListenerThread(client,gameController);
+            ServerListenerThread serverListenerThread = new ServerListenerThread(clientCommunication,gameController);
             serverListenerThread.execute();
             stage.setMinHeight(600);
             stage.setMinWidth(800);
             stage.setTitle("Игра");
             stage.setScene(new Scene(root, 800, 600));
-            stage.setOnCloseRequest(event -> client.stop());
+            stage.setOnCloseRequest(event -> clientCommunication.stop());
             stage.show();
         } catch (IOException e) {
             throw new IllegalStateException(e);

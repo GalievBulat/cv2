@@ -1,7 +1,7 @@
 package view.dao;
 
 import view.interfaces.ViewManipulations;
-import view.models.Figure;
+import view.model.Figure;
 import view.services.BoardManager;
 
 import java.util.ArrayList;

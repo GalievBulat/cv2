@@ -1,10 +1,7 @@
 package view.services;
 
-import javafx.scene.Node;
 import javafx.scene.control.ListView;
-import javafx.scene.layout.GridPane;
-import view.interfaces.ViewManipulations;
-import view.models.Message;
+import view.model.Message;
 
 
 public class ListManipulations{

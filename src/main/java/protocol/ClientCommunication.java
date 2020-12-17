@@ -1,9 +1,8 @@
-package client;
+package protocol;
 
-import server.helper.IOHandler;
 import server.helper.Meta;
 import server.model.User;
-import view.models.Message;
+import view.model.Message;
 
 import java.io.*;
 import java.net.Socket;
@@ -12,7 +11,7 @@ import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Collectors;
 
-public class Client implements AutoCloseable {
+public class ClientCommunication implements AutoCloseable {
     final Socket socket;
     private final BufferedReader reader;
     private final BufferedWriter writer;
@@ -23,7 +22,7 @@ public class Client implements AutoCloseable {
     }
 
     private final IOHandler helper = new IOHandler();
-    public Client(User user){
+    public ClientCommunication(User user){
         try {
             this.user = user;
             socket = new Socket(Meta.HOST,Meta.PORT);

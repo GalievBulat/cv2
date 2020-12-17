@@ -2,8 +2,6 @@ package server.model;
 public class Unit {
     private final UnitType type;
     private byte health;
-    public byte x;
-    public byte y;
     private Unit(UnitType type){
         this.type = type;
         this.health = type.getHealth();
