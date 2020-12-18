@@ -7,9 +7,11 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import protocol.data.Data;
 import server.model.User;
 import view.controllers.GameSpaceController;
 import view.controllers.LoginController;
+import view.interfaces.OnLogInListener;
 import view.services.ServerListenerThread;
 
 import java.io.IOException;
@@ -41,26 +43,34 @@ public class GameViewExecution extends Application {
             root = loader.load();
             loginController = loader.getController();
             loginController.setUser(user);
-            loginController.setExecutor(this);
-            stage.setMinHeight(600);
-            stage.setMinWidth(800);
+            loginController.setOnLogInListener(this::startGame);
+            stage.setMinHeight(400);
+            stage.setMinWidth(600);
             stage.setTitle("Представтесь");
-            stage.setScene(new Scene(root, 800, 600));
+            stage.setScene(new Scene(root, 600, 400));
             stage.show();
         } catch (IOException e) {
             throw new IllegalStateException(e);
         }
     }
 
-    public void startGame(ClientCommunication clientCommunication, int roomId){
+    public void startGame(User user, int roomId){
         Parent root;
         FXMLLoader loader;
         try {
-            clientCommunication.sendMessage("/e " + roomId);
+            ClientCommunication clientCommunication = new ClientCommunication(user);
+            clientCommunication.sendCommandWithNum(Data.ENTER, roomId);
             loader = new FXMLLoader(getClass().getResource("../game.fxml"));
             root = loader.load();
             gameController = loader.getController();
             gameController.setClient(clientCommunication);
+            gameController.setOnLeaveListener(()->{
+                try {
+                    this.init();
+                } catch (Exception e) {
+                    e.printStackTrace();
+                }
+            });
             loginController = null;
             ServerListenerThread serverListenerThread = new ServerListenerThread(clientCommunication,gameController);
             serverListenerThread.execute();

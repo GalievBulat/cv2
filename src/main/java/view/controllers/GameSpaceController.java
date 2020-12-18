@@ -1,5 +1,6 @@
 package view.controllers;
 
+import javafx.scene.control.Button;
 import javafx.util.Pair;
 import protocol.ClientCommunication;
 import javafx.fxml.FXML;
@@ -13,6 +14,8 @@ import protocol.data.Data;
 import view.dao.CardsRepository;
 import view.dao.FiguresRepository;
 import view.dao.UnitTypeRepository;
+import view.interfaces.OnLeaveListener;
+import view.interfaces.OnLogInListener;
 import view.interfaces.ViewManipulations;
 import view.model.Card;
 import view.model.Figure;
@@ -30,6 +33,8 @@ public class GameSpaceController implements Initializable {
     public GridPane cards;
     @FXML
     public ListView<String> messagesList;
+    @FXML
+    public Button leave_button;
     private Card selectedCard;
     private Figure selectedFigure;
     private ViewManipulations boardManipulatingHandler = null;
@@ -38,13 +43,14 @@ public class GameSpaceController implements Initializable {
     private FiguresRepository figuresRepository = null;
     private CardsRepository cardsRepository;
     private ClientCommunication communication;
+    private OnLeaveListener onLeaveListener;
     private int role = -1;
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         cardsManipulatingHandler = new GridManipulations(cards);
         boardManipulatingHandler = new GridManipulations(board);
         //TODO
-        cardsManipulatingHandler.add(new Card(new UnitTypeRepository().find(1)).getView(),0,0);
+        //cardsManipulatingHandler.add(new Card(new UnitTypeRepository().find(1)).getView(),0,0);
         listManipulations = new ListManipulations(messagesList);
         figuresRepository = new FiguresRepository(boardManipulatingHandler, new BoardManager());
         cardsRepository =  new CardsRepository(card -> {
@@ -55,6 +61,7 @@ public class GameSpaceController implements Initializable {
             card.getView().setStyle("-fx-border-color: black");
         },cardsManipulatingHandler);
         setUpTheBoard();
+        leave_button.setOnMouseClicked(event -> onLeaveListener.onLeave());
         board.setOnMouseClicked((event -> {
             Node node = event.getPickResult().getIntersectedNode();
             if (GridPane.getColumnIndex(node) != null && GridPane.getRowIndex(node)!=null ) {
@@ -93,7 +100,7 @@ public class GameSpaceController implements Initializable {
         }));
     }
 
-    public void move(boolean self,int columnS,int rowS, int columnD,int rowD){
+    public void move(boolean self, int columnS, int rowS, int columnD, int rowD){
         //????
         if (figuresRepository.findFigure(columnS, rowS).isPresent()) {
             Figure prevFigure =figuresRepository.findFigure(columnS, rowS).get();
@@ -161,5 +168,9 @@ public class GameSpaceController implements Initializable {
 
     public CardsRepository getCardsRepository() {
         return cardsRepository;
+    }
+
+    public void setOnLeaveListener(OnLeaveListener onLeaveListener) {
+        this.onLeaveListener = onLeaveListener;
     }
 }

@@ -9,6 +9,7 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
 import server.model.User;
 import view.GameViewExecution;
+import view.interfaces.OnLogInListener;
 
 import java.net.URL;
 import java.util.Arrays;
@@ -25,7 +26,7 @@ public class LoginController implements Initializable {
     @FXML
     public Button bn_join;
     private User user;
-    private GameViewExecution executor;
+    private OnLogInListener onLogInListener;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -33,11 +34,10 @@ public class LoginController implements Initializable {
             String name = tf_name.getText();
             if (user!=null) {
                 user.setName(name);
-                ClientCommunication clientCommunication = new ClientCommunication(user);
                 setRooms(user.getRooms());
                 //TODO if rooms are empty
                 bn_join.setOnMouseClicked(event1 ->{
-                    executor.startGame(clientCommunication,chb_room.getValue());
+                    onLogInListener.onLogIn(user,chb_room.getValue());
                 });
             }
         });
@@ -48,9 +48,8 @@ public class LoginController implements Initializable {
     private void setRooms(int[] rooms){
         chb_room.setItems(new ObservableListWrapper<>(Arrays.stream(rooms).boxed().collect(Collectors.toList())));
     }
-    public void setExecutor(GameViewExecution executor) {
-        this.executor = executor;
+    public void setOnLogInListener(OnLogInListener onLogInListener) {
+        this.onLogInListener = onLogInListener;
     }
-
 
 }
