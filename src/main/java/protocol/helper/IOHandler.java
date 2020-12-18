@@ -1,4 +1,4 @@
-package protocol;
+package protocol.helper;
 
 import javafx.util.Pair;
 

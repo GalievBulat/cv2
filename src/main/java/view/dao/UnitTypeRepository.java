@@ -9,9 +9,9 @@ import java.util.Random;
 public class UnitTypeRepository {
     private final List<UnitType> types = new ArrayList<>();
     {
-        types.add(new UnitType.Builder().id(0).name("Infantry").image("src/main/resources/xd.jpg").create());
-        types.add(new UnitType.Builder().id(1).name("artillery").image("src/main/resources/xd.jpg").create());
-        types.add(new UnitType.Builder().id(2).name("cavalry").image("src/main/resources/xd.jpg").create());
+        types.add(new UnitType.Builder().id(0).name("Infantry").image("xd.jpg").create());
+        types.add(new UnitType.Builder().id(1).name("artillery").image("xd.jpg").create());
+        types.add(new UnitType.Builder().id(2).name("cavalry").image("xd.jpg").create());
     }
     public UnitType find (int id){
         return types.get(id);

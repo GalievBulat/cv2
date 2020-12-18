@@ -1,5 +1,6 @@
 package view.controllers;
 
+import javafx.util.Pair;
 import protocol.ClientCommunication;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -8,8 +9,10 @@ import javafx.geometry.VPos;
 import javafx.scene.Node;
 import javafx.scene.control.ListView;
 import javafx.scene.layout.*;
+import protocol.data.Data;
 import view.dao.CardsRepository;
 import view.dao.FiguresRepository;
+import view.dao.UnitTypeRepository;
 import view.interfaces.ViewManipulations;
 import view.model.Card;
 import view.model.Figure;
@@ -34,12 +37,14 @@ public class GameSpaceController implements Initializable {
     private ListManipulations listManipulations = null;
     private FiguresRepository figuresRepository = null;
     private CardsRepository cardsRepository;
-    private ClientCommunication clientCommunication;
+    private ClientCommunication communication;
     private int role = -1;
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         cardsManipulatingHandler = new GridManipulations(cards);
         boardManipulatingHandler = new GridManipulations(board);
+        //TODO
+        cardsManipulatingHandler.add(new Card(new UnitTypeRepository().find(1)).getView(),0,0);
         listManipulations = new ListManipulations(messagesList);
         figuresRepository = new FiguresRepository(boardManipulatingHandler, new BoardManager());
         cardsRepository =  new CardsRepository(card -> {
@@ -63,7 +68,8 @@ public class GameSpaceController implements Initializable {
                             //worrying about it
                             if ((role == 1 && row == BoardManager.BOARD_ROWS - 1)||(role == 2 && row == 0)) {
                                 cardsRepository.remove(selectedCard);
-                                clientCommunication.sendMessage("/dp " + selectedCard.getUnit().getId() + " {" + column + ";" + row + "}");
+                                communication.sendCommandWithCoordsAndNum(Data.DEPLOY,selectedCard.getUnit().getId(),
+                                        new Pair<>((byte) column,(byte) row));
                                 selectedCard = null;
                             }
                         }
@@ -71,12 +77,14 @@ public class GameSpaceController implements Initializable {
                             Math.abs(selectedFigure.getRow() - row) <= 1 && Math.abs(selectedFigure.getColumn() - column) <= 1) {
                         if (figuresRepository.checkIfEnemy(column, row)) {
                             //attackingMap.put(selectedFigure, figuresRepository.findFigure(column, row).orElseThrow(RuntimeException::new));
-                            clientCommunication.sendMessage("/at {" +  selectedFigure.getColumn() + ";" + selectedFigure.getRow()+ "} " +
-                                    "{" + column + ";" + row  + "}");
+                            communication.sendCommandWithCoords(Data.ATTACK,
+                                    new Pair<>((byte)selectedFigure.getColumn(), (byte)selectedFigure.getRow()),
+                                    new Pair<>((byte)column,(byte)row));
                         } else if (!figuresRepository.checkIfExists(column, row)) {
                             //figuresRepository.removeFigure(selectedFigure);
-                            clientCommunication.sendMessage("/mv {" + selectedFigure.getColumn() + ";" + selectedFigure.getRow() + "} " +
-                                    "{" + column + ";" + row  + "}");
+                            communication.sendCommandWithCoords(Data.MOVE,
+                                    new Pair<>((byte) selectedFigure.getColumn(), (byte) selectedFigure.getRow()),
+                                    new Pair<>((byte) column, (byte) row));
                             selectedFigure = null;
                         }
                     }
@@ -123,7 +131,7 @@ public class GameSpaceController implements Initializable {
         this.role = roleId;
     }
     public void setClient(ClientCommunication clientCommunication) {
-        this.clientCommunication = clientCommunication;
+        this.communication = clientCommunication;
     }
     private void setUpTheBoard(){
         for (int i = 0; i < BoardManager.BOARD_COLUMNS; i++) {

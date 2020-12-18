@@ -1,6 +1,8 @@
 package protocol;
 
 import javafx.util.Pair;
+import protocol.data.Data;
+import protocol.helper.IOHandler;
 import server.model.User;
 
 import java.io.IOException;
@@ -70,6 +72,24 @@ public class ServerCommunication implements AutoCloseable {
                 close();
             } catch (IOException ignore) { }
         }
+    }
+    public Data parseCommand(String message){
+        if (message.charAt(0) == '/') {
+            String[] strings = message.split(" ");
+            String command = strings[0];
+            if (command.equals("/s")) {
+                return Data.STOP;
+            }else if (command.equals("/sd"))
+                return Data.DISCONNECT;
+            else if (command.equals("/e"))
+                return Data.ENTER;
+            else
+                return Data.OTHER;
+        }
+        return Data.ERROR;
+    }
+    public int getRoomFromCommand(String message){
+        return Integer.parseInt(message.split(" ")[1]);
     }
     public boolean isClosed(){
         return socket.isClosed();
