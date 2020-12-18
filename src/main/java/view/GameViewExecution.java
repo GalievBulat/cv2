@@ -65,10 +65,12 @@ public class GameViewExecution extends Application {
             gameController.setClient(clientCommunication);
             gameController.setOnLeaveListener(()->{
                 try {
-                    launch();
-                } catch (Exception e) {
+                    clientCommunication.close();
+                } catch (IOException e) {
                     e.printStackTrace();
                 }
+                stage.close();
+                start(stage);
             });
             loginController = null;
             ServerListenerThread serverListenerThread = new ServerListenerThread(clientCommunication,gameController);
