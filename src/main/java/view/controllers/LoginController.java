@@ -34,10 +34,11 @@ public class LoginController implements Initializable {
             String name = tf_name.getText();
             if (user!=null) {
                 user.setName(name);
+                ClientCommunication clientCommunication = new ClientCommunication(user);
                 setRooms(user.getRooms());
                 //TODO if rooms are empty
                 bn_join.setOnMouseClicked(event1 ->{
-                    onLogInListener.onLogIn(user,chb_room.getValue());
+                    onLogInListener.onLogIn(clientCommunication,chb_room.getValue());
                 });
             }
         });

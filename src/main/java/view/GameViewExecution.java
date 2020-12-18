@@ -54,11 +54,10 @@ public class GameViewExecution extends Application {
         }
     }
 
-    public void startGame(User user, int roomId){
+    public void startGame(ClientCommunication clientCommunication, int roomId){
         Parent root;
         FXMLLoader loader;
         try {
-            ClientCommunication clientCommunication = new ClientCommunication(user);
             clientCommunication.sendCommandWithNum(Data.ENTER, roomId);
             loader = new FXMLLoader(getClass().getResource("../game.fxml"));
             root = loader.load();
@@ -66,7 +65,7 @@ public class GameViewExecution extends Application {
             gameController.setClient(clientCommunication);
             gameController.setOnLeaveListener(()->{
                 try {
-                    this.init();
+                    launch();
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
