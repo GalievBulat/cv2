@@ -39,7 +39,8 @@ public class GameService {
             Unit attacked = boardManager.get(x2, y2).get();
             if (cl1 && (units1.contains(attacker) && units2.contains(attacked))) {
                 if (boardManager.checkIfExists(x1,y1) )
-                attacked.getAttacked((byte) ((ENCIRCLEMENT_DAMAGE_COEFFICIENT *(boardManager.getNeighboursCount(x2,y2)/8))*
+                attacked.getAttacked((byte) ((ENCIRCLEMENT_DAMAGE_COEFFICIENT *
+                        ((float)boardManager.getNeighboursCount(x2,y2)/8))*
                                         attacker.getDamage()));
                 if (attacked.getHealth()<=0){
                     boardManager.remove(x2,y2);
@@ -47,7 +48,8 @@ public class GameService {
                     return true;
                 }
             }else if (!cl1 && (units2.contains(attacker) && units1.contains(attacked))){
-                attacked.getAttacked((byte) ((ENCIRCLEMENT_DAMAGE_COEFFICIENT *(boardManager.getNeighboursCount(x2,y2)/8))*
+                attacked.getAttacked((byte) ((ENCIRCLEMENT_DAMAGE_COEFFICIENT *
+                        ((float)boardManager.getNeighboursCount(x2,y2)/8))*
                         attacker.getDamage()));
                 if (attacked.getHealth()<=0){
                     boardManager.remove(x2,y2);
@@ -105,6 +107,9 @@ public class GameService {
 
     public int getCards_given() {
         return cards_given;
+    }
+    public Optional<Unit> getUnit(byte x, byte y){
+        return boardManager.get(x, y);
     }
 
     public void setCards_given(int cards_given) {

@@ -61,8 +61,8 @@ public class ServerCommandsPresenterThread {
                         controller.attack(
                                 coords1.getKey(), coords1.getValue(),
                                 coords2.getKey(), coords2.getValue());
-                        controller.print(message.getUser() + ": attacked unit at " +
-                                coords2.getKey() + ";" + coords2.getValue() );
+                        /*controller.print(message.getUser() + ": attacked unit at " +
+                                coords2.getKey() + ";" + coords2.getValue() );*/
                     });
                 } else if (commandType == CommandData.REMOVE){
                     Pair<Byte,Byte> coords=clientCommunication.getCoords(text,1);

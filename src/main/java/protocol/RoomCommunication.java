@@ -26,11 +26,9 @@ public class RoomCommunication {
     public void connect(User user, Socket socket,int userNum){
         sockets.put(user,socket);
         try {
-            //TODO
             System.out.println(user.getName() + " connected to " + id);
-            helper.writeLine(socket.getOutputStream(), String.join(Meta.DELIMITER, archive));
-            sendToUser(user, CommandData.CONNECT + " " + userNum);
-            sendToChatters(user, "connected");
+            sendToUser(user, CommandData.CONNECT.getCommand() + " " + userNum);
+            helper.writeLine(socket.getOutputStream(), String.join(Meta.DELIMITER, archive));            sendToChatters(user, "connected");
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -59,7 +57,6 @@ public class RoomCommunication {
         }
     }
     public void disconnect(User user){
-        //TODO
         sendToChatters(user, "disconnected");
         sockets.remove(user);
     }

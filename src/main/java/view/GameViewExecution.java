@@ -8,7 +8,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 import protocol.data.CommandData;
-import server.model.User;
+import view.model.User;
 import view.controllers.GameSpaceController;
 import view.controllers.LoginController;
 import view.services.ServerCommandsPresenterThread;
@@ -76,10 +76,10 @@ public class GameViewExecution extends Application {
             ServerCommandsPresenterThread commandsPresenterThread =
                     new ServerCommandsPresenterThread(clientCommunication,gameController);
             commandsPresenterThread.executeInBackGround();
-            stage.setMinHeight(600);
-            stage.setMinWidth(800);
+            stage.setMinHeight(800);
+            stage.setMinWidth(900);
             stage.setTitle("Игра");
-            stage.setScene(new Scene(root, 800, 600));
+            stage.setScene(new Scene(root, 900, 800));
             stage.setOnCloseRequest(event -> clientCommunication.stop());
             stage.show();
         } catch (IOException e) {

@@ -14,6 +14,8 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
 
+import static protocol.data.CommandData.INIT;
+
 public class ServerCommunication implements AutoCloseable {
     private final ServerSocket socket;
     private final Map<User, Socket> sockets = new ConcurrentHashMap<>();
@@ -49,14 +51,15 @@ public class ServerCommunication implements AutoCloseable {
             Socket client = socket.accept();
             System.out.println("connected");
             String query = helper.readLine(client.getInputStream());
-            if (query.startsWith("/i ")) {
+            CommandData commandData = CommandData.determineCommand(query);
+            if (commandData == INIT) {
                 String[] args = query.split(" ");
                 String name = args[1];
                 User user = new User();
                 user.setName(name);
                 sockets.put(user, client);
                 helper.writeLine(client.getOutputStream(),
-                        "/d " + rooms.stream().map(room -> room + "")
+                        CommandData.DATA.getCommand() + " " + rooms.stream().map(room -> room + " ")
                                 .collect(Collectors.joining()));
                 System.out.println(name + " initialized");
             } else {

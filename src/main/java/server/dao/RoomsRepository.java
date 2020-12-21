@@ -12,6 +12,12 @@ public class RoomsRepository {
      public RoomsRepository(){
          Room room = new Room(0);
          rooms.put(0,room);
+         rooms.put(1,new Room(1));
+         rooms.put(2,new Room(2));
+         rooms.put(3,new Room(3));
+         rooms.put(4,new Room(4));
+         rooms.put(5,new Room(5));
+
     }
 
     public  List<Room> getRooms() {

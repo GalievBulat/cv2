@@ -4,9 +4,9 @@ import javafx.util.Pair;
 import protocol.data.CommandData;
 import protocol.helper.CoordsParser;
 import protocol.helper.IOHandler;
-import server.helper.Meta;
-import server.model.User;
+import view.helper.Meta;
 import view.model.Message;
+import view.model.User;
 
 import java.io.*;
 import java.net.Socket;

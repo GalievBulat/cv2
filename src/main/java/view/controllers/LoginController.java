@@ -7,7 +7,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
-import server.model.User;
+import view.model.User;
 import view.interfaces.OnLogInListener;
 
 import java.net.URL;
@@ -29,11 +29,15 @@ public class LoginController implements Initializable {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        chb_room.setVisible(false);
+        bn_join.setVisible(false);
         bn_login.setOnMouseClicked(event ->{
             String name = tf_name.getText();
             if (user!=null) {
                 user.setName(name);
                 ClientCommunication clientCommunication = new ClientCommunication(user);
+                chb_room.setVisible(true);
+                bn_join.setVisible(true);
                 setRooms(user.getRoomsAvailable());
                 //TODO if rooms are empty
                 bn_join.setOnMouseClicked(event1 ->{

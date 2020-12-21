@@ -20,6 +20,6 @@ public enum CommandData {
             if(firstPart.equals(commandData.command))
                 return commandData;
         }
-        return CommandData.ERROR;
+        return CommandData.OTHER;
     }
 }

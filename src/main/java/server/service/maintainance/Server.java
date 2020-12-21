@@ -31,25 +31,30 @@ public class Server implements AutoCloseable {
         }
     }
     public void listenToIncomingMessages(){
-        while (!serverCommunication.isClosed()) {
-            for (Pair<String,User> update : serverCommunication.getUpdates()){
-                handleMessage(update.getKey(),update.getValue());
-            }
-            long currentTime = System.currentTimeMillis();
-            for (Room room: roomsRepository.getRooms()){
-                if (!room.isVacant()) {
-                    if (currentTime - room.getLastTimeOfExecution() >= COMMANDS_EXECUTION_PERIOD) {
-                        room.executePool();
-                    }
-                    if (currentTime - room.getLastTimeCardGiven() >= CARDS_GIVING_PERIOD) {
-                        room.giveCards();
+        try {
+            while (!serverCommunication.isClosed()) {
+                for (Pair<String, User> update : serverCommunication.getUpdates()) {
+                    handleMessage(update.getKey(), update.getValue());
+                }
+                long currentTime = System.currentTimeMillis();
+                for (Room room : roomsRepository.getRooms()) {
+                    if (!room.isVacant()) {
+                        if (currentTime - room.getLastTimeOfExecution() >= COMMANDS_EXECUTION_PERIOD) {
+                            room.executePool();
+                        }
+                        if (currentTime - room.getLastTimeCardGiven() >= CARDS_GIVING_PERIOD) {
+                            room.giveCards();
+                        }
                     }
                 }
             }
+        } catch (RuntimeException e){
+            serverCommunication.alertAll(e.toString());
         }
     }
     public void handleMessage(String message, User user){
         try {
+            System.out.println(message);
             CommandData command = CommandData.determineCommand(message);
             if (command == CommandData.DISCONNECT) {
                 serverCommunication.closeClient(user);
@@ -61,7 +66,7 @@ public class Server implements AutoCloseable {
             else if (command== CommandData.ENTER)
                 roomsRepository.getRoom(serverCommunication.getRoomFromCommand(message))
                         .connect(user,serverCommunication.getSocket(user));
-            else if (command== CommandData.OTHER)
+            else
                 roomsRepository.getRoom(user.getCurrentChat()).handleCommand(message,user);
         }catch (IOException e) {
             throw new RuntimeException(e);

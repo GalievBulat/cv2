@@ -29,6 +29,7 @@ public class Room {
     }
     public void disconnect(User user){
         //TODO
+        System.out.println(user.getName() + " disconnected");
         roomCommunication.disconnect(user);
         gameService.removePlayer(user);
         user.setCurrentChat(-1);
@@ -65,12 +66,16 @@ public class Room {
             executionPool.add(()->{
                 if (!gameService.attack(user == gameService.getPlayer1(), coordsAttacker.getKey(), coordsAttacker.getValue(),
                         coordsAttacked.getKey(), coordsAttacked.getValue())) {
+                    gameService.getUnit(coordsAttacked.getKey(),coordsAttacked.getValue()).ifPresent(it-> {
+                                roomCommunication.sendToChatters(user, "юнит атакован осталось hp " +
+                                        it.getHealth());
+                            });
                     roomCommunication.sendCommandWithCoords(command,user,coordsAttacker,coordsAttacked);
                 } else {
                     if (gameService.isGameOver()) {
                         roomCommunication.sendCommandWithCoordsToUser(CommandData.GAME_OVER,user);
                     }else
-                        roomCommunication.sendCommandWithCoords(CommandData.REMOVE,user,coordsAttacker,coordsAttacked);
+                        roomCommunication.sendCommandWithCoords(CommandData.REMOVE,user,coordsAttacked);
                 }
             });
         }

@@ -1,8 +1,10 @@
 package view.services;
 
+import view.helper.Meta;
+
 public class BoardManager {
-    public final static int BOARD_COLUMNS = 16;
-    public final static int BOARD_ROWS = 16;
+    public final static int BOARD_COLUMNS = Meta.BOARD_COLUMNS;
+    public final static int BOARD_ROWS = Meta.BOARD_ROWS;
     boolean [][] allies = new boolean[BOARD_COLUMNS][BOARD_ROWS];
     boolean [][] enemies = new boolean[BOARD_COLUMNS][BOARD_ROWS];
     public boolean addAlly(int column,int row){

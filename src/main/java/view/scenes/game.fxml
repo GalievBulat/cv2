@@ -12,7 +12,8 @@
         <ColumnConstraints minWidth="100.0" percentWidth="30" />
     </columnConstraints>
     <rowConstraints>
-        <RowConstraints minHeight="200.0" percentHeight="80" />
+        <RowConstraints minHeight="200.0" percentHeight="65" />
+        <RowConstraints minHeight="200.0" percentHeight="15" />
         <RowConstraints minHeight="200.0" percentHeight="20" />
     </rowConstraints>
     <GridPane fx:id="board" alignment="center" gridLinesVisible="true">
@@ -20,7 +21,7 @@
          <Insets left="10.0" />
       </padding>
    </GridPane>
-    <StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="100.0" minWidth="-Infinity" prefHeight="150.0" prefWidth="250.0" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="1" GridPane.valignment="BOTTOM">
+    <StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="100.0" minWidth="-Infinity" prefHeight="150.0" prefWidth="250.0" GridPane.columnIndex="1" GridPane.halignment="RIGHT" GridPane.rowIndex="2" GridPane.valignment="BOTTOM">
         <GridPane.margin>
             <Insets />
         </GridPane.margin>
@@ -49,12 +50,21 @@
       </GridPane>
     </StackPane>
    <ListView fx:id="messagesList" layoutX="400.0" layoutY="8.0" maxHeight="0.0" minHeight="-Infinity" GridPane.columnIndex="1" GridPane.rowIndex="0" GridPane.valignment="TOP" />
-   <Button fx:id="leave_button" mnemonicParsing="false" text="leave the room" textAlignment="CENTER" GridPane.columnIndex="0" GridPane.halignment="LEFT" GridPane.rowIndex="1">
+   <Button fx:id="leave_button" mnemonicParsing="false" style="-fx-background-color: darkgrey;" text="leave the room" textAlignment="CENTER" textFill="WHITE" GridPane.columnIndex="0" GridPane.halignment="LEFT" GridPane.rowIndex="1">
       <font>
          <Font name="Times New Roman" size="24.0" />
       </font>
       <GridPane.margin>
-         <Insets />
+         <Insets left="50.0" />
       </GridPane.margin>
+   </Button>
+   <TextField GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.valignment="TOP">
+      <GridPane.margin>
+         <Insets />
+      </GridPane.margin></TextField>
+   <Button maxWidth="1.7976931348623157E308" minHeight="-Infinity" mnemonicParsing="false" style="-fx-background-color: darkgrey;" text="Send" textAlignment="CENTER" textFill="WHITE" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="BOTTOM">
+      <font>
+         <Font name="Roboto Light" size="24.0" />
+      </font>
    </Button>
 </GridPane>
