@@ -2,7 +2,7 @@ package server.service.maintainance;
 
 import javafx.util.Pair;
 import protocol.RoomCommunication;
-import protocol.data.Data;
+import protocol.data.CommandData;
 import server.helper.Meta;
 import server.model.User;
 import server.service.GameService;
@@ -41,17 +41,17 @@ public class Room {
     public void handleCommand(String message, User user){
         //TODO
         System.out.println(message);
-        Data command= roomCommunication.parseCommand(message);
-        if (command == Data.DISCONNECT)
+        CommandData command= CommandData.determineCommand(message);
+        if (command == CommandData.DISCONNECT)
             disconnect(user);
-        else if (command == Data.DEPLOY) {
+        else if (command == CommandData.DEPLOY) {
             int type = roomCommunication.getNumFromCommand(message,2);
             Pair<Byte ,Byte> coords = roomCommunication.getCoords(message,1);
             executionPool.add(()-> {
                 gameService.add(user == gameService.getPlayer1(), type, coords.getKey(), coords.getValue());
                 roomCommunication.sendCommandWithCoordsAndNum(command,user,type,coords);
             });
-        }else if (command == Data.MOVE) {
+        }else if (command == CommandData.MOVE) {
             Pair<Byte, Byte> coordsStart = roomCommunication.getCoords(message,1);
             Pair<Byte, Byte> coordsDest =  roomCommunication.getCoords(message,2);
             executionPool.add(()->{
@@ -59,7 +59,7 @@ public class Room {
                         coordsDest.getKey(), coordsDest.getValue());
                 roomCommunication.sendCommandWithCoords(command,user,coordsStart,coordsDest);
             });
-        }else if (command == Data.ATTACK) {
+        }else if (command == CommandData.ATTACK) {
             Pair<Byte, Byte> coordsAttacker = roomCommunication.getCoords(message,1);
             Pair<Byte, Byte> coordsAttacked = roomCommunication.getCoords(message,2);
             executionPool.add(()->{
@@ -68,9 +68,9 @@ public class Room {
                     roomCommunication.sendCommandWithCoords(command,user,coordsAttacker,coordsAttacked);
                 } else {
                     if (gameService.isGameOver()) {
-                        roomCommunication.sendCommandWithCoordsToUser(Data.GAME_OVER,user);
+                        roomCommunication.sendCommandWithCoordsToUser(CommandData.GAME_OVER,user);
                     }else
-                        roomCommunication.sendCommandWithCoords(Data.REMOVE,user,coordsAttacker,coordsAttacked);
+                        roomCommunication.sendCommandWithCoords(CommandData.REMOVE,user,coordsAttacker,coordsAttacked);
                 }
             });
         }
@@ -87,8 +87,10 @@ public class Room {
     }
     public void giveCards(){
         if (gameService.getCards_given()<=CARDS_OVERALL_AMOUNT) {
-            roomCommunication.sendCommandWithNumToUser(Data.CARD_GIVING,gameService.getPlayer1(),gameService.getUnitTypeRepository().getRandom().getId());
-            roomCommunication.sendCommandWithNumToUser(Data.CARD_GIVING,gameService.getPlayer2(),gameService.getUnitTypeRepository().getRandom().getId());
+            roomCommunication.sendCommandWithNumToUser(CommandData.CARD_GIVING,gameService.getPlayer1(),
+                    gameService.getUnitTypeRepository().getRandom().getId());
+            roomCommunication.sendCommandWithNumToUser(CommandData.CARD_GIVING,gameService.getPlayer2(),
+                    gameService.getUnitTypeRepository().getRandom().getId());
             gameService.setCards_given(gameService.getCards_given()+1);
             lastTimeCardGiven = System.currentTimeMillis();
         }

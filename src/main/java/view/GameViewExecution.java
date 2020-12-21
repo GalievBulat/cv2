@@ -7,7 +7,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import protocol.data.Data;
+import protocol.data.CommandData;
 import server.model.User;
 import view.controllers.GameSpaceController;
 import view.controllers.LoginController;
@@ -57,13 +57,14 @@ public class GameViewExecution extends Application {
         Parent root;
         FXMLLoader loader;
         try {
-            clientCommunication.sendCommandWithNum(Data.ENTER, roomId);
+            clientCommunication.sendCommandWithNum(CommandData.ENTER, roomId);
             loader = new FXMLLoader(getClass().getResource("../game.fxml"));
             root = loader.load();
             gameController = loader.getController();
             gameController.setClient(clientCommunication);
             gameController.setOnLeaveListener(()->{
                 try {
+                    clientCommunication.sendCommandWithCoords(CommandData.DISCONNECT);
                     clientCommunication.close();
                 } catch (IOException e) {
                     e.printStackTrace();

@@ -1,7 +1,7 @@
 package protocol;
 
 import javafx.util.Pair;
-import protocol.data.Data;
+import protocol.data.CommandData;
 import protocol.helper.CoordsParser;
 import protocol.helper.IOHandler;
 import server.helper.Meta;
@@ -32,7 +32,7 @@ public class ClientCommunication implements AutoCloseable {
             this.user = user;
             socket = new Socket(Meta.HOST,Meta.PORT);
             writer = new BufferedWriter(new OutputStreamWriter(socket.getOutputStream()));
-            helper.writeLine(writer,"/i "+ user.getName() + "\n");
+            helper.writeLine(writer,CommandData.INIT.getCommand() + " "+ user.getName() + "\n");
             reader =new BufferedReader( new InputStreamReader(socket.getInputStream()));
             String response = helper.readLine(reader);
             if(!addRooms(response)){
@@ -82,7 +82,7 @@ public class ClientCommunication implements AutoCloseable {
         }
     }
     public void stop(){
-        helper.writeLine(writer,"/s");
+        helper.writeLine(writer,CommandData.STOP.getCommand());
         try {
             close();
         } catch (IOException ignore) { }
@@ -92,57 +92,36 @@ public class ClientCommunication implements AutoCloseable {
     }
 
     private boolean addRooms(String query){
-        if (query.startsWith("/d")){
+        CommandData commandData = CommandData.determineCommand(query);
+        if (commandData == CommandData.DATA){
             String[] strings = query.split(" ");
             int[] res = new int[strings.length-1];
             for (int i = 0; i < strings.length-1; i++) {
                 res[i] = Integer.parseInt(strings[i+1]);
             }
-            user.setRooms(res);
+            user.setRoomsAvailable(res);
             return true;
         }
         else return false;
-    }
-    public Data commandHandler(String message){
-        if (message.charAt(0) == '/'){
-            String[] partsOfData = message.split(" ");
-            if(partsOfData[0].equals("/c")) {
-                return Data.CONNECT;
-            } else if (partsOfData[0].equals("/cd")){
-                return Data.CARD_GIVING;
-            } else if(partsOfData[0].equals("/dp")) {
-                return Data.DEPLOY;
-            }else if (partsOfData[0].equals("/mv")){
-                return Data.MOVE;
-            } else if (partsOfData[0].equals("/at")){
-                return Data.ATTACK;
-            } else if (partsOfData[0].equals("/rv")){
-                return Data.REMOVE;
-            }  else if (partsOfData[0].equals("/go")){
-                return Data.GAME_OVER;
-            }
-        } else
-            return Data.OTHER;
-        return Data.ERROR;
     }
     public Pair<Byte,Byte> getCoords(String command, int num){
         return coordsParser.parseCoordinates(command.split(" ")[num ]);
     }
     @SafeVarargs
-    public final void sendCommandWithCoords(Data type, Pair<Byte, Byte>... coords){
+    public final void sendCommandWithCoords(CommandData type, Pair<Byte, Byte>... coords){
         sendMessage(
                 type.getCommand() + " " +
                         Arrays.stream(coords)
                                 .map(pair->"{" + pair.getKey() + ";" + pair.getValue() + "}")
                                 .collect(Collectors.joining(" ")));
     }
-    public final void sendCommandWithNum(Data type, int num){
+    public final void sendCommandWithNum(CommandData type, int num){
         sendMessage(
                 type.getCommand() + " " +
                         num);
     }
     @SafeVarargs
-    public final void sendCommandWithCoordsAndNum(Data type, int num,Pair<Byte, Byte>... coords){
+    public final void sendCommandWithCoordsAndNum(CommandData type, int num, Pair<Byte, Byte>... coords){
         sendMessage(
                 type.getCommand() + " " +
                         Arrays.stream(coords)

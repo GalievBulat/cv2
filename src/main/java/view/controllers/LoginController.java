@@ -8,7 +8,6 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.TextField;
 import server.model.User;
-import view.GameViewExecution;
 import view.interfaces.OnLogInListener;
 
 import java.net.URL;
@@ -35,7 +34,7 @@ public class LoginController implements Initializable {
             if (user!=null) {
                 user.setName(name);
                 ClientCommunication clientCommunication = new ClientCommunication(user);
-                setRooms(user.getRooms());
+                setRooms(user.getRoomsAvailable());
                 //TODO if rooms are empty
                 bn_join.setOnMouseClicked(event1 ->{
                     onLogInListener.onLogIn(clientCommunication,chb_room.getValue());

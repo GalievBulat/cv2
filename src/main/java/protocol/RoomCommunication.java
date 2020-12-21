@@ -1,13 +1,11 @@
 package protocol;
 
-import javafx.application.Platform;
 import javafx.util.Pair;
-import protocol.data.Data;
+import protocol.data.CommandData;
 import protocol.helper.CoordsParser;
 import protocol.helper.IOHandler;
 import server.helper.Meta;
 import server.model.User;
-import view.model.Card;
 
 import java.io.IOException;
 import java.net.Socket;
@@ -31,7 +29,7 @@ public class RoomCommunication {
             //TODO
             System.out.println(user.getName() + " connected to " + id);
             helper.writeLine(socket.getOutputStream(), String.join(Meta.DELIMITER, archive));
-            sendToUser(user, "/c " + userNum);
+            sendToUser(user, CommandData.CONNECT + " " + userNum);
             sendToChatters(user, "connected");
         } catch (IOException e) {
             throw new RuntimeException(e);
@@ -68,36 +66,22 @@ public class RoomCommunication {
     public int getSize(){
         return sockets.size();
     }
-    public Data parseCommand(String message){
-        if (message.charAt(0) == '/') {
-            String[] strings = message.split(" ");
-            String command = strings[0];
-            if (command.equals("/l"))
-                return Data.DISCONNECT;
-            else if (command.equals("/dp"))
-                return Data.DEPLOY;
-            else if (command.equals("/mv"))
-                return Data.MOVE;
-            else if (command.equals("/at"))
-                return Data.ATTACK;
-        }
-        return Data.ERROR;
-    }
+
     @SafeVarargs
-    public final void sendCommandWithCoords(Data type, User user, Pair<Byte, Byte>... coords){
+    public final void sendCommandWithCoords(CommandData type, User user, Pair<Byte, Byte>... coords){
         sendToChatters(user,
                 type.getCommand() + " " +
                         Arrays.stream(coords)
                                 .map(pair->"{" + pair.getKey() + ";" + pair.getValue() + "}")
                                 .collect(Collectors.joining(" ")));
     }
-    public final void sendCommandWithNum(Data type, User user, int num){
+    public final void sendCommandWithNum(CommandData type, User user, int num){
         sendToChatters(user,
                 type.getCommand() + " " +
                         num);
     }
     @SafeVarargs
-    public final void sendCommandWithCoordsAndNum(Data type, User user, int num,Pair<Byte, Byte>... coords){
+    public final void sendCommandWithCoordsAndNum(CommandData type, User user, int num, Pair<Byte, Byte>... coords){
         sendToChatters(user,
                 type.getCommand() + " " +
                         Arrays.stream(coords)
@@ -105,20 +89,20 @@ public class RoomCommunication {
                                 .collect(Collectors.joining(" ")) + " " + num);
     }
     @SafeVarargs
-    public final void sendCommandWithCoordsToUser(Data type, User user, Pair<Byte, Byte>... coords){
+    public final void sendCommandWithCoordsToUser(CommandData type, User user, Pair<Byte, Byte>... coords){
         sendToUser(user,
                     type.getCommand() + " " +
                             Arrays.stream(coords)
                                     .map(pair->"{" + pair.getKey() + ";" + pair.getValue() + "}")
                                     .collect(Collectors.joining(" ")));
     }
-    public final void sendCommandWithNumToUser(Data type, User user, int num){
+    public final void sendCommandWithNumToUser(CommandData type, User user, int num){
         sendToUser(user,
                 type.getCommand() + " " +
                         num);
     }
     @SafeVarargs
-    public final void sendCommandWithCoordsAndNumToUser(Data type, User user, int num,Pair<Byte, Byte>... coords){
+    public final void sendCommandWithCoordsAndNumToUser(CommandData type, User user, int num, Pair<Byte, Byte>... coords){
             sendToUser(user,
                     type.getCommand() + " " +
                             Arrays.stream(coords)

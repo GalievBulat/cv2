@@ -2,17 +2,15 @@ package server.model;
 
 public class User {
     private String name;
-    private int[] rooms;
-
-
+    private int[] roomsAvailable;
     private int currentChat = -1;
 
     public User() {
     }
 
-    public User(String name, int[] rooms) {
+    public User(String name, int[] roomsAvailable) {
         this.name = name;
-        this.rooms = rooms;
+        this.roomsAvailable = roomsAvailable;
     }
 
     public int getCurrentChat() {
@@ -32,11 +30,11 @@ public class User {
         this.name = name;
     }
 
-    public int[] getRooms() {
-        return rooms;
+    public int[] getRoomsAvailable() {
+        return roomsAvailable;
     }
 
-    public void setRooms(int[] rooms) {
-        this.rooms = rooms;
+    public void setRoomsAvailable(int[] roomsAvailable) {
+        this.roomsAvailable = roomsAvailable;
     }
 }

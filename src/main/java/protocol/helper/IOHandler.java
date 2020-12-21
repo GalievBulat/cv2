@@ -28,8 +28,7 @@ public class IOHandler {
     }
     public String readLine(BufferedReader reader) {
         try {
-            String line = reader.readLine();
-            return line;
+            return reader.readLine();
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

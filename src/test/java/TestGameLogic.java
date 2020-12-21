@@ -14,13 +14,6 @@ import static server.helper.Meta.CARDS_OVERALL_AMOUNT;
 
 public class TestGameLogic {
     @Test
-    public void gameServiceMoveTest(){
-        GameService gameService = new GameService();
-        gameService.add(true,1,(byte) 1,(byte) 1);
-        assertTrue(gameService.move(true,(byte) 1,(byte) 1,(byte) 2,(byte) 2));
-
-    }
-    @Test
     public void gameServiceRejoinTest(){
         GameService gameService = new GameService();
         User player1 = new User();
@@ -32,12 +25,6 @@ public class TestGameLogic {
         assertEquals(player2,gameService.getPlayer2());
     }
     @Test
-    public void gameServiceGameOverTest(){
-        GameService gameService = new GameService();
-        gameService.setCards_given(CARDS_OVERALL_AMOUNT);
-        assertTrue(gameService.isGameOver());
-    }
-    @Test
     public void gameServiceFirstConnectedIsPlayer1(){
         GameService gameService = new GameService();
         User player1 = new User();
@@ -45,14 +32,19 @@ public class TestGameLogic {
         assertEquals(player1,gameService.getPlayer1());
     }
     @Test
-    public void serverListeningTest(){
-        List<Message> list= new ArrayList<Message>();
-        list.add(new Message("user","/c 1"));
-        ClientCommunication communication = mock(ClientCommunication.class);
-        when(communication.isAlive()).thenReturn(true);
-        when(communication.getMessages()).thenReturn(list);
-
+    public void gameServiceMoveTest(){
+        GameService gameService = new GameService();
+        gameService.add(true,1,(byte) 1,(byte) 1);
+        assertTrue(gameService.move(true,(byte) 1,(byte) 1,(byte) 2,(byte) 2));
     }
+
+    @Test
+    public void gameServiceGameOverTest(){
+        GameService gameService = new GameService();
+        gameService.setCards_given(CARDS_OVERALL_AMOUNT);
+        assertTrue(gameService.isGameOver());
+    }
+
 
 
 }

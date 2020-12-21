@@ -3,7 +3,7 @@ package view.services;
 import protocol.ClientCommunication;
 import javafx.application.Platform;
 import javafx.util.Pair;
-import protocol.data.Data;
+import protocol.data.CommandData;
 import view.controllers.GameSpaceController;
 import view.dao.UnitTypeRepository;
 import view.model.Card;
@@ -31,22 +31,22 @@ public class ServerCommandsPresenterThread {
                 //TODO
                 System.out.println(message);
                 String text = message.getText().trim();
-                Data commandType = clientCommunication.commandHandler(text);
-                if(commandType == Data.CONNECT) {
+                CommandData commandType = CommandData.determineCommand(text);
+                if(commandType == CommandData.CONNECT) {
                     controller.setRole(clientCommunication.getNumFromCommand(text,1));
-                } else if (commandType == Data.CARD_GIVING){
+                } else if (commandType == CommandData.CARD_GIVING){
                     Platform.runLater(()-> {
                         controller.getCardsRepository()
                                 .add(new Card( repository.find(clientCommunication.getNumFromCommand(text,1))),
                                 controller.getCardsRepository().getSize());
                     });
-                } else if(commandType == Data.DEPLOY) {
+                } else if(commandType == CommandData.DEPLOY) {
                         Pair<Byte,Byte> coords= clientCommunication.getCoords(text,1);
                         Platform.runLater(()-> {
                             controller.deploy(message.getUser().equals(clientCommunication.getUser().getName()),
                                     clientCommunication.getNumFromCommand(text,2), coords.getKey(),coords.getValue());
                         });
-                }else if (commandType == Data.MOVE){
+                }else if (commandType == CommandData.MOVE){
                     Pair<Byte,Byte> coords1=clientCommunication.getCoords(text,1);
                     Pair<Byte,Byte> coords2=clientCommunication.getCoords(text,2);
                     Platform.runLater(()->{
@@ -54,7 +54,7 @@ public class ServerCommandsPresenterThread {
                                 coords1.getKey(),coords1.getValue(),
                                 coords2.getKey(),coords2.getValue());
                     });
-                } else if (commandType == Data.ATTACK){
+                } else if (commandType == CommandData.ATTACK){
                     Pair<Byte,Byte> coords1=clientCommunication.getCoords(text,1);
                     Pair<Byte,Byte> coords2=clientCommunication.getCoords(text,2);
                     Platform.runLater(()-> {
@@ -64,7 +64,7 @@ public class ServerCommandsPresenterThread {
                         controller.print(message.getUser() + ": attacked unit at " +
                                 coords2.getKey() + ";" + coords2.getValue() );
                     });
-                } else if (commandType == Data.REMOVE){
+                } else if (commandType == CommandData.REMOVE){
                     Pair<Byte,Byte> coords=clientCommunication.getCoords(text,1);
                     Platform.runLater(()-> {
                         controller.remove(
@@ -72,11 +72,11 @@ public class ServerCommandsPresenterThread {
                         controller.print(message.getUser() + ": destroyed unit at " +
                                 coords.getKey() + ";" + coords.getValue() );
                     });
-                }  else if (commandType == Data.GAME_OVER){
+                }  else if (commandType == CommandData.GAME_OVER){
                     Platform.runLater(()-> {
                         controller.print("Game over " + message.getUser() + " won the game!");
                     });
-                } else if (commandType == Data.OTHER) Platform.runLater(()-> {
+                } else if (commandType == CommandData.OTHER) Platform.runLater(()-> {
                     controller.print(message.toString());
                 });
             }
