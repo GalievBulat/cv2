@@ -52,7 +52,6 @@ public class Server implements AutoCloseable {
         try {
             CommandData command = CommandData.determineCommand(message);
             if (command == CommandData.DISCONNECT) {
-                //TODO проверь что работает
                 serverCommunication.closeClient(user);
                 if (user.getCurrentChat()!=-1){
                     roomsRepository.getRoom(user.getCurrentChat()).disconnect(user);

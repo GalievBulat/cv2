@@ -18,6 +18,7 @@ public class FiguresRepository {
     }
     public void addAlliedFigure(Figure figure){
         if(boardManager.addAlly(figure.getColumn(),figure.getRow())) {
+            figure.setColour(1);
             figuresList.add(figure);
             service.add(figure.getView(), figure.getColumn(), figure.getRow());
         }else
@@ -25,6 +26,7 @@ public class FiguresRepository {
     }
     public void addEnemyFigure(Figure figure){
         if(boardManager.addEnemy(figure.getColumn(),figure.getRow())) {
+            figure.setColour(0);
             figuresList.add(figure);
             service.add(figure.getView(), figure.getColumn(), figure.getRow());
         }else

@@ -73,7 +73,8 @@ public class GameViewExecution extends Application {
                 start(stage);
             });
             loginController = null;
-            ServerCommandsPresenterThread commandsPresenterThread = new ServerCommandsPresenterThread(clientCommunication,gameController);
+            ServerCommandsPresenterThread commandsPresenterThread =
+                    new ServerCommandsPresenterThread(clientCommunication,gameController);
             commandsPresenterThread.executeInBackGround();
             stage.setMinHeight(600);
             stage.setMinWidth(800);

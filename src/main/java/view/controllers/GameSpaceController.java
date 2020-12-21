@@ -47,8 +47,6 @@ public class GameSpaceController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         cardsManipulatingHandler = new GridManipulations(cards);
         boardManipulatingHandler = new GridManipulations(board);
-        //TODO
-        //cardsManipulatingHandler.add(new Card(new UnitTypeRepository().find(1)).getView(),0,0);
         listManipulations = new ListManipulations(messagesList);
         figuresRepository = new FiguresRepository(boardManipulatingHandler, new BoardManager());
         cardsRepository =  new CardsRepository(card -> {
@@ -70,7 +68,6 @@ public class GameSpaceController implements Initializable {
                 } else {
                     if (selectedCard != null  && !figuresRepository.checkIfExists(column, row)) {
                         if(role !=-1) {
-                            //worrying about it
                             if ((role == 1 && row == BoardManager.BOARD_ROWS - 1)||(role == 2 && row == 0)) {
                                 cardsRepository.remove(selectedCard);
                                 communication.sendCommandWithCoordsAndNum(CommandData.DEPLOY,selectedCard.getUnit().getId(),
@@ -81,12 +78,10 @@ public class GameSpaceController implements Initializable {
                     } else if (selectedFigure != null &&
                             Math.abs(selectedFigure.getRow() - row) <= 1 && Math.abs(selectedFigure.getColumn() - column) <= 1) {
                         if (figuresRepository.checkIfEnemy(column, row)) {
-                            //attackingMap.put(selectedFigure, figuresRepository.findFigure(column, row).orElseThrow(RuntimeException::new));
                             communication.sendCommandWithCoords(CommandData.ATTACK,
                                     new Pair<>((byte)selectedFigure.getColumn(), (byte)selectedFigure.getRow()),
                                     new Pair<>((byte)column,(byte)row));
                         } else if (!figuresRepository.checkIfExists(column, row)) {
-                            //figuresRepository.removeFigure(selectedFigure);
                             communication.sendCommandWithCoords(CommandData.MOVE,
                                     new Pair<>((byte) selectedFigure.getColumn(), (byte) selectedFigure.getRow()),
                                     new Pair<>((byte) column, (byte) row));

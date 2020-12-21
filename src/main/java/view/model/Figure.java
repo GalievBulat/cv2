@@ -29,6 +29,12 @@ public class Figure {
     public int getRow() {
         return row;
     }
+    public void setColour(int i){
+        if (i == 1){
+            circle.setStyle("-fx-background-color: white");
+        }else
+            circle.setStyle("-fx-background-color: black");
+    }
 
     public void setRow(int row) {
         this.row = row;
