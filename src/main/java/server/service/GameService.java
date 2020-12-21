@@ -112,10 +112,7 @@ public class GameService {
     }
 
     private boolean checkGameOver(){
-        if (cards_given>=CARDS_OVERALL_AMOUNT && (units1.isEmpty() || units2.isEmpty())){
-            return true;
-        }
-        return false;
+        return cards_given >= CARDS_OVERALL_AMOUNT && (units1.isEmpty() || units2.isEmpty());
     }
 
     public boolean isGameOver() {

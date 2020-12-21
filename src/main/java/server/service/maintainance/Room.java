@@ -37,7 +37,6 @@ public class Room {
         int userNum = gameService.addPlayer(user);
         roomCommunication.connect(user, socket, userNum);
         user.setCurrentChat(id);
-
     }
     public void handleCommand(String message, User user){
         //TODO
@@ -69,7 +68,7 @@ public class Room {
                     roomCommunication.sendCommandWithCoords(command,user,coordsAttacker,coordsAttacked);
                 } else {
                     if (gameService.isGameOver()) {
-                        roomCommunication.sendCommandWithCoords(Data.GAME_OVER,user);
+                        roomCommunication.sendCommandWithCoordsToUser(Data.GAME_OVER,user);
                     }else
                         roomCommunication.sendCommandWithCoords(Data.REMOVE,user,coordsAttacker,coordsAttacked);
                 }
@@ -88,8 +87,8 @@ public class Room {
     }
     public void giveCards(){
         if (gameService.getCards_given()<=CARDS_OVERALL_AMOUNT) {
-            roomCommunication.sendCommandWithNum(Data.CARD_GIVING,gameService.getPlayer1(),gameService.getUnitTypeRepository().getRandom().getId());
-            roomCommunication.sendCommandWithNum(Data.CARD_GIVING,gameService.getPlayer2(),gameService.getUnitTypeRepository().getRandom().getId());
+            roomCommunication.sendCommandWithNumToUser(Data.CARD_GIVING,gameService.getPlayer1(),gameService.getUnitTypeRepository().getRandom().getId());
+            roomCommunication.sendCommandWithNumToUser(Data.CARD_GIVING,gameService.getPlayer2(),gameService.getUnitTypeRepository().getRandom().getId());
             gameService.setCards_given(gameService.getCards_given()+1);
             lastTimeCardGiven = System.currentTimeMillis();
         }

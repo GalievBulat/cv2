@@ -11,8 +11,7 @@ import protocol.data.Data;
 import server.model.User;
 import view.controllers.GameSpaceController;
 import view.controllers.LoginController;
-import view.interfaces.OnLogInListener;
-import view.services.ServerListenerThread;
+import view.services.ServerCommandsPresenterThread;
 
 import java.io.IOException;
 
@@ -73,8 +72,8 @@ public class GameViewExecution extends Application {
                 start(stage);
             });
             loginController = null;
-            ServerListenerThread serverListenerThread = new ServerListenerThread(clientCommunication,gameController);
-            serverListenerThread.execute();
+            ServerCommandsPresenterThread commandsPresenterThread = new ServerCommandsPresenterThread(clientCommunication,gameController);
+            commandsPresenterThread.executeInBackGround();
             stage.setMinHeight(600);
             stage.setMinWidth(800);
             stage.setTitle("Игра");

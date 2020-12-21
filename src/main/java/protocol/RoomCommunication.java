@@ -79,7 +79,7 @@ public class RoomCommunication {
             else if (command.equals("/mv"))
                 return Data.MOVE;
             else if (command.equals("/at"))
-                return Data.MOVE;
+                return Data.ATTACK;
         }
         return Data.ERROR;
     }
@@ -103,6 +103,28 @@ public class RoomCommunication {
                         Arrays.stream(coords)
                                 .map(pair->"{" + pair.getKey() + ";" + pair.getValue() + "}")
                                 .collect(Collectors.joining(" ")) + " " + num);
+    }
+    @SafeVarargs
+    public final void sendCommandWithCoordsToUser(Data type, User user, Pair<Byte, Byte>... coords){
+        sendToUser(user,
+                    type.getCommand() + " " +
+                            Arrays.stream(coords)
+                                    .map(pair->"{" + pair.getKey() + ";" + pair.getValue() + "}")
+                                    .collect(Collectors.joining(" ")));
+    }
+    public final void sendCommandWithNumToUser(Data type, User user, int num){
+        sendToUser(user,
+                type.getCommand() + " " +
+                        num);
+    }
+    @SafeVarargs
+    public final void sendCommandWithCoordsAndNumToUser(Data type, User user, int num,Pair<Byte, Byte>... coords){
+            sendToUser(user,
+                    type.getCommand() + " " +
+                            Arrays.stream(coords)
+                                    .map(pair->"{" + pair.getKey() + ";" + pair.getValue() + "}")
+                                    .collect(Collectors.joining(" ")) + " " + num);
+
     }
     public Pair<Byte,Byte> getCoords(String command, int num){
         return coordsParser.parseCoordinates(command.split(" ")[num]);

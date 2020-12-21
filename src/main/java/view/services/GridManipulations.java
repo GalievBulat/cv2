@@ -4,6 +4,8 @@ import javafx.scene.Node;
 import javafx.scene.layout.GridPane;
 import view.interfaces.ViewManipulations;
 
+import java.util.List;
+
 public class GridManipulations implements ViewManipulations {
     private final GridPane pane;
     public GridManipulations(GridPane pane){
@@ -20,5 +22,8 @@ public class GridManipulations implements ViewManipulations {
     @Override
     public void remove(Node node){
         pane.getChildren().remove(node);
+    }
+    public List<Node> getAll(){
+        return pane.getChildren();
     }
 }
