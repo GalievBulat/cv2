@@ -4,7 +4,8 @@ public enum CommandData {
     GAME_OVER("/go"), MOVE("/mv"), REMOVE("/rv"), OTHER(""),
     ATTACK("/at"), DEPLOY("/dp"), CARD_GIVING("/cd"),
     CONNECT("/c"), ERROR("/er"), ENTER("/e"),STOP("/s"),
-    DISCONNECT("/l"), SHUTDOWN("/sd"), DATA("/d"), INIT("/i");
+    DISCONNECT("/l"), SHUTDOWN("/sd"), DATA("/d"), INIT("/i"),
+    MESSAGE("/m");
     private final String command;
 
     CommandData(String command) {

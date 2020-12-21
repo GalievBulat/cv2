@@ -40,7 +40,10 @@ public class ServerCommandsPresenterThread {
                                 .add(new Card( repository.find(clientCommunication.getNumFromCommand(text,1))),
                                 controller.getCardsRepository().getSize());
                     });
-                } else if(commandType == CommandData.DEPLOY) {
+                }else if (commandType == CommandData.MESSAGE) {
+                    Platform.runLater(()-> controller.print(message.getText()
+                            .replaceFirst(CommandData.MESSAGE.getCommand(),"")));
+                }else if(commandType == CommandData.DEPLOY) {
                         Pair<Byte,Byte> coords= clientCommunication.getCoords(text,1);
                         Platform.runLater(()-> {
                             controller.deploy(message.getUser().equals(clientCommunication.getUser().getName()),

@@ -1,6 +1,7 @@
 package view.controllers;
 
 import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
 import javafx.util.Pair;
 import protocol.ClientCommunication;
 import javafx.fxml.FXML;
@@ -33,6 +34,10 @@ public class GameSpaceController implements Initializable {
     public ListView<String> messagesList;
     @FXML
     public Button leave_button;
+    @FXML
+    public Button send_button;
+    @FXML
+    public TextField message_text;
     private Card selectedCard;
     private Figure selectedFigure;
     private ViewManipulations boardManipulatingHandler = null;
@@ -91,6 +96,9 @@ public class GameSpaceController implements Initializable {
                 }
             }
         }));
+        send_button.setOnMouseClicked(event -> {
+            communication.sendMessage(CommandData.MESSAGE.getCommand() + " " + message_text.getText());
+        });
     }
 
     public void move(boolean self, int columnS, int rowS, int columnD, int rowD){

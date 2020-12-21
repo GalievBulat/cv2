@@ -31,25 +31,25 @@ public class Server implements AutoCloseable {
         }
     }
     public void listenToIncomingMessages(){
-        try {
-            while (!serverCommunication.isClosed()) {
-                for (Pair<String, User> update : serverCommunication.getUpdates()) {
-                    handleMessage(update.getKey(), update.getValue());
-                }
-                long currentTime = System.currentTimeMillis();
-                for (Room room : roomsRepository.getRooms()) {
-                    if (!room.isVacant()) {
-                        if (currentTime - room.getLastTimeOfExecution() >= COMMANDS_EXECUTION_PERIOD) {
-                            room.executePool();
-                        }
-                        if (currentTime - room.getLastTimeCardGiven() >= CARDS_GIVING_PERIOD) {
-                            room.giveCards();
+        while (!serverCommunication.isClosed()) {
+            try {
+                    for (Pair<String, User> update : serverCommunication.getUpdates()) {
+                        handleMessage(update.getKey(), update.getValue());
+                    }
+                    long currentTime = System.currentTimeMillis();
+                    for (Room room : roomsRepository.getRooms()) {
+                        if (!room.isVacant()) {
+                            if (currentTime - room.getLastTimeOfExecution() >= COMMANDS_EXECUTION_PERIOD) {
+                                room.executePool();
+                            }
+                            if (currentTime - room.getLastTimeCardGiven() >= CARDS_GIVING_PERIOD) {
+                                room.giveCards();
+                            }
                         }
                     }
-                }
+            } catch (RuntimeException e){
+                serverCommunication.alertAll(e.toString());
             }
-        } catch (RuntimeException e){
-            serverCommunication.alertAll(e.toString());
         }
     }
     public void handleMessage(String message, User user){

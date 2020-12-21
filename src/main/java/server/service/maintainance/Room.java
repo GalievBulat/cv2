@@ -78,6 +78,8 @@ public class Room {
                         roomCommunication.sendCommandWithCoords(CommandData.REMOVE,user,coordsAttacked);
                 }
             });
+        }else if (command == CommandData.MESSAGE) {
+            roomCommunication.sendToChatters(user, message);
         }
     }
     public void executePool(){

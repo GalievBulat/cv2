@@ -58,11 +58,11 @@
          <Insets left="50.0" />
       </GridPane.margin>
    </Button>
-   <TextField GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.valignment="TOP">
+   <TextField fx:id="message_text" GridPane.columnIndex="1" GridPane.rowIndex="1" GridPane.valignment="TOP">
       <GridPane.margin>
          <Insets />
       </GridPane.margin></TextField>
-   <Button maxWidth="1.7976931348623157E308" minHeight="-Infinity" mnemonicParsing="false" style="-fx-background-color: darkgrey;" text="Send" textAlignment="CENTER" textFill="WHITE" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="BOTTOM">
+   <Button fx:id="send_button" minHeight="-Infinity" mnemonicParsing="false" style="-fx-background-color: darkgrey;" text="Send" textAlignment="CENTER" textFill="WHITE" GridPane.columnIndex="1" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="BOTTOM">
       <font>
          <Font name="Roboto Light" size="24.0" />
       </font>
