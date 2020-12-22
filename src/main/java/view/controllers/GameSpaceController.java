@@ -53,6 +53,7 @@ public class GameSpaceController implements Initializable {
         cardsManipulatingHandler = new GridManipulations(cards);
         boardManipulatingHandler = new GridManipulations(board);
         listManipulations = new ListManipulations(messagesList);
+        listManipulations.append("Вы вошли в комнату, ожидайте \n подключения других \n игроков на сервер");
         figuresRepository = new FiguresRepository(boardManipulatingHandler, new BoardManager());
         cardsRepository =  new CardsRepository(card -> {
             if (selectedCard != null) {

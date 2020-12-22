@@ -37,10 +37,13 @@ public class ServerCommunication implements AutoCloseable {
                                 helper.readLine(sockets.get(user).getInputStream()), user));
                     }
                 }
-        } catch (RuntimeException | IOException e){
+        } catch (RuntimeException e){
+            e.printStackTrace();
+            alertAll( e.toString());
+        } catch (IOException e){
             e.printStackTrace();
             try {
-                alertAll(e.toString());
+                alertAll("FATAL ERROR: " + e.toString());
                 close();
             } catch (IOException ignore) { }
         }
@@ -66,12 +69,13 @@ public class ServerCommunication implements AutoCloseable {
                 client.close();
                 throw new RuntimeException("wrong greeting");
             }
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        } catch (RuntimeException e){
+        }catch (RuntimeException e){
+            e.printStackTrace();
+            alertAll(e.getMessage());
+        }catch (IOException e) {
             e.printStackTrace();
             try {
-                alertAll(e.getMessage());
+                alertAll("FATAL ERROR: " + e.toString());
                 close();
             } catch (IOException ignore) { }
         }

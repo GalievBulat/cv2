@@ -36,13 +36,15 @@ public class LoginController implements Initializable {
             if (user!=null) {
                 user.setName(name);
                 ClientCommunication clientCommunication = new ClientCommunication(user);
-                chb_room.setVisible(true);
-                bn_join.setVisible(true);
-                setRooms(user.getRoomsAvailable());
-                //TODO if rooms are empty
-                bn_join.setOnMouseClicked(event1 ->{
-                    onLogInListener.onLogIn(clientCommunication,chb_room.getValue());
-                });
+                if(user.getRoomsAvailable().length>0) {
+                    chb_room.setVisible(true);
+                    bn_join.setVisible(true);
+                    setRooms(user.getRoomsAvailable());
+                    chb_room.setValue(user.getRoomsAvailable()[0]);
+                    bn_join.setOnMouseClicked(event1 -> {
+                        onLogInListener.onLogIn(clientCommunication, chb_room.getValue());
+                    });
+                }
             }
         });
     }

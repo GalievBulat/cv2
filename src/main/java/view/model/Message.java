@@ -6,19 +6,16 @@ public class Message {
     private String userName;
     private String text;
 
-
     @Override
     public String toString() {
         String text = "";
-        return text + "Name: " + this.userName + "\n Text: " + this.text ;
+        return text + "User: " + this.userName + "\n Text: " + this.text ;
     }
-
 
     public Message(String name, String text) {
         userName = name;
         this.text = text;
     }
-
 
     public String getUser() {
         return userName;

@@ -28,8 +28,8 @@ public class ServerCommandsPresenterThread {
             List<Message> messages = clientCommunication.getMessages();
             if (messages.size()>0)
             for (Message message: messages){
-                //TODO
-                System.out.println(message);
+                /*
+                System.out.println(message);*/
                 String text = message.getText().trim();
                 CommandData commandType = CommandData.determineCommand(text);
                 if(commandType == CommandData.CONNECT) {
@@ -41,7 +41,7 @@ public class ServerCommandsPresenterThread {
                                 controller.getCardsRepository().getSize());
                     });
                 }else if (commandType == CommandData.MESSAGE) {
-                    Platform.runLater(()-> controller.print(message.getText()
+                    Platform.runLater(()-> controller.print( message.getUser() + ": " + message.getText()
                             .replaceFirst(CommandData.MESSAGE.getCommand(),"")));
                 }else if(commandType == CommandData.DEPLOY) {
                         Pair<Byte,Byte> coords= clientCommunication.getCoords(text,1);
