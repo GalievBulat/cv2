@@ -1,10 +1,11 @@
 package view.model;
 
 import javafx.scene.Node;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 
 public class Figure {
-    private final Node circle;
+    private final Circle circle;
     private int column;
     private int row;
     private final UnitType unitType;
@@ -31,9 +32,9 @@ public class Figure {
     }
     public void setColour(int i){
         if (i == 1){
-            circle.setStyle("-fx-background-color: white");
+            circle.setFill(Color.WHITE);
         }else
-            circle.setStyle("-fx-background-color: black");
+            circle.setFill(Color.BLACK);
     }
 
     public void setRow(int row) {
