@@ -1,2 +1,2 @@
-Видео новое:
-https://drive.google.com/file/d/1K6BW9Ex85TKV4HtJ1IfmHTJEvJ7Re7On/view?usp=sharing
+Видео :
+https://drive.google.com/drive/folders/1bmDyThPxmyTa-XbSFLfI1M4grBDQ5n-T
