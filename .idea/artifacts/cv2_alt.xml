@@ -1,0 +1,34 @@
+<component name="ArtifactManager">
+  <artifact type="javafx" name="cv2_alt">
+    <output-path>$PROJECT_DIR$/out/artifacts/cv2_alt</output-path>
+    <properties id="javafx-properties">
+      <options>
+        <option name="appClass" value="view.GameViewExecution" />
+        <option name="description" value="" />
+        <option name="htmlPlaceholderId" value="" />
+        <option name="title" value="" />
+        <option name="vendor" value="" />
+        <option name="version" value="" />
+      </options>
+    </properties>
+    <root id="root">
+      <element id="archive" name="cv2_alt.jar">
+        <element id="module-output" name="cv2_alt" />
+        <element id="library" level="project" name="Maven: org.openjfx:javafx-controls:11" />
+        <element id="library" level="project" name="Maven: org.openjfx:javafx-controls:win:11" />
+        <element id="library" level="project" name="Maven: org.openjfx:javafx-graphics:11" />
+        <element id="library" level="project" name="Maven: org.openjfx:javafx-graphics:win:11" />
+        <element id="library" level="project" name="Maven: org.openjfx:javafx-base:11" />
+        <element id="library" level="project" name="Maven: org.openjfx:javafx-base:win:11" />
+        <element id="library" level="project" name="Maven: org.openjfx:javafx-fxml:11" />
+        <element id="library" level="project" name="Maven: org.openjfx:javafx-fxml:win:11" />
+        <element id="library" level="project" name="Maven: org.junit.jupiter:junit-jupiter-engine:5.5.2" />
+        <element id="library" level="project" name="Maven: org.apiguardian:apiguardian-api:1.1.0" />
+        <element id="library" level="project" name="Maven: org.junit.platform:junit-platform-engine:1.5.2" />
+        <element id="library" level="project" name="Maven: org.opentest4j:opentest4j:1.2.0" />
+        <element id="library" level="project" name="Maven: org.junit.platform:junit-platform-commons:1.5.2" />
+        <element id="library" level="project" name="Maven: org.junit.jupiter:junit-jupiter-api:5.5.2" />
+      </element>
+    </root>
+  </artifact>
+</component>

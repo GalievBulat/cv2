@@ -25,9 +25,14 @@ public class Server implements AutoCloseable {
         serverCommunication.close();
     }
     public void handleConnections() {
-        while (!serverCommunication.isClosed()) {
-            serverCommunication.addClient(
-                    roomsRepository.getVacantRooms().stream().map(Room::getId).collect(Collectors.toList()));
+        try {
+            while (!serverCommunication.isClosed()) {
+                serverCommunication.addClient(
+                        roomsRepository.getVacantRooms().stream().map(Room::getId).collect(Collectors.toList()));
+            }
+        } catch (RuntimeException e){
+            e.printStackTrace();
+            serverCommunication.alertAll(e.toString());
         }
     }
     public void listenToIncomingMessages(){
@@ -48,6 +53,7 @@ public class Server implements AutoCloseable {
                         }
                     }
             } catch (RuntimeException e){
+                e.printStackTrace();
                 serverCommunication.alertAll(e.toString());
             }
         }

@@ -74,8 +74,8 @@ public class Room {
                 } else {
                     if (gameService.isGameOver()) {
                         roomCommunication.sendCommandWithCoordsToUser(CommandData.GAME_OVER,user);
-                    }else
-                        roomCommunication.sendCommandWithCoords(CommandData.REMOVE,user,coordsAttacked);
+                    }
+                    roomCommunication.sendCommandWithCoords(CommandData.REMOVE,user,coordsAttacked);
                 }
             });
         }else if (command == CommandData.MESSAGE) {

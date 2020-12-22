@@ -32,7 +32,7 @@
                 <directory>src/main/java/view/scenes</directory>
                 <includes>
                     <include>**/*.fxml</include>
-
+                    <include>**/*.jpg</include>
                 </includes>
 
             </resource>

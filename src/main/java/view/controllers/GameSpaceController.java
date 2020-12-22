@@ -145,14 +145,14 @@ public class GameSpaceController implements Initializable {
         for (int i = 0; i < BoardManager.BOARD_COLUMNS; i++) {
             board.addColumn(i);
             ColumnConstraints constraints = new ColumnConstraints(30);
-            constraints.setPercentWidth((double) 80/BoardManager.BOARD_ROWS);
+            constraints.setPercentWidth((double) 100/BoardManager.BOARD_ROWS);
             constraints.setHalignment(HPos.CENTER);
             board.getColumnConstraints().add(constraints);
         }
         for (int i = 0; i < BoardManager.BOARD_ROWS; i++) {
             board.addRow(i);
             RowConstraints constraints = new RowConstraints(30);
-            constraints.setPercentHeight((double) 80/BoardManager.BOARD_ROWS);
+            constraints.setPercentHeight((double) 100/BoardManager.BOARD_ROWS);
             constraints.setValignment(VPos.CENTER);
             board.getRowConstraints().add(constraints);
         }
@@ -162,6 +162,7 @@ public class GameSpaceController implements Initializable {
                 boardManipulatingHandler.add(region,i,j);
             }
         }
+        board.setStyle("-fx-background-color: #517164");
     }
     public void print(String text){
         listManipulations.append(text);

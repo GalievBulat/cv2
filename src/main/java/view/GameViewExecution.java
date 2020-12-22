@@ -38,7 +38,7 @@ public class GameViewExecution extends Application {
         Parent root;
         FXMLLoader loader;
         try {
-            loader = new FXMLLoader(getClass().getResource("../login.fxml"));
+            loader = new FXMLLoader(getClass().getResource("/login.fxml"));
             root = loader.load();
             loginController = loader.getController();
             loginController.setUser(user);
@@ -58,7 +58,7 @@ public class GameViewExecution extends Application {
         FXMLLoader loader;
         try {
             clientCommunication.sendCommandWithNum(CommandData.ENTER, roomId);
-            loader = new FXMLLoader(getClass().getResource("../game.fxml"));
+            loader = new FXMLLoader(getClass().getResource("/game.fxml"));
             root = loader.load();
             gameController = loader.getController();
             gameController.setClient(clientCommunication);
