@@ -1,7 +1,6 @@
 package server.helper;
 
 public class Meta {
-     public final static String HOST = "localhost";
      public final static int PORT = 9999;
      public final static String DELIMITER="'DED'";
      public final static int USERS_IN_ROOM_LIMIT = 2;

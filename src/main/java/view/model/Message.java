@@ -9,7 +9,7 @@ public class Message {
     @Override
     public String toString() {
         String text = "";
-        return text + "User: " + this.userName + "\n Text: " + this.text ;
+        return text + "User: " + this.userName + "\nText: " + this.text ;
     }
 
     public Message(String name, String text) {
